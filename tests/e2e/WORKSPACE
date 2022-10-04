@@ -1,0 +1,8 @@
+workspace(
+    name = "bazel-toolchains-yocto-test",
+)
+
+local_repository(
+    name = "bazel_toolchains_yocto",
+    path = "../..",
+)
