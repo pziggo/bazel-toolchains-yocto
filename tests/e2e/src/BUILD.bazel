@@ -1,0 +1,17 @@
+cc_binary(
+    name = "simple_hello_c",
+    srcs = ["simple_hello.c"],
+    linkopts = [],
+)
+
+cc_library(
+    name = "simple_lib_cpp",
+    srcs = ["simple_lib.cpp"],
+    hdrs = ["simple_lib.hpp"],
+)
+
+cc_binary(
+    name = "simple_hello_cpp",
+    srcs = ["simple_hello.cpp"],
+    deps = [":simple_lib_cpp"],
+)
