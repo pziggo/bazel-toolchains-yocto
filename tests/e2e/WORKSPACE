@@ -6,3 +6,7 @@ local_repository(
     name = "bazel_toolchains_yocto",
     path = "../..",
 )
+
+load("@bazel_toolchains_yocto//toolchains:repositories.bzl", "bazel_toolchains_yocto_dependencies")
+
+bazel_toolchains_yocto_dependencies()
