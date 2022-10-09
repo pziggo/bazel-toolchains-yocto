@@ -10,3 +10,17 @@ local_repository(
 load("@bazel_toolchains_yocto//toolchains:repositories.bzl", "bazel_toolchains_yocto_dependencies")
 
 bazel_toolchains_yocto_dependencies()
+
+load("@bazel_toolchains_yocto//toolchains:defs.bzl", "yocto_download_sdk")
+
+yocto_download_sdk(
+    name = "core2-64-poky-linux",
+    sha256 = "9e9b4673b7bfc061bc501f17362c8e81ff300c725405c48fdf3d39f53105a448",
+    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.0.4/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.0.4.sh"],
+)
+
+yocto_download_sdk(
+    name = "cortexa57-poky-linux",
+    sha256 = "348afcacadf8a16affc4a7cc077e7512d467033ddaf446533cf19ef377f5ca3e",
+    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.0.4/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.0.4.sh"],
+)

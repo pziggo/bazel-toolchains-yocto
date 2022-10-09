@@ -1,1 +1,12 @@
+build --incompatible_strict_action_env
 build --incompatible_enable_cc_toolchain_resolution
+
+build --verbose_failures
+
+build:core2 --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+build:core2 --platforms=//platform:core2-64-poky-linux
+build:core2 --extra_toolchains=@core2-64-poky-linux//toolchain:cc-toolchain-target
+
+build:cortexa57 --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+build:cortexa57 --platforms=//platform:cortexa57-poky-linux
+build:cortexa57 --extra_toolchains=@cortexa57-poky-linux//toolchain:cc-toolchain-target
