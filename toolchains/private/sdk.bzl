@@ -111,6 +111,10 @@ def _sdk_generate_config(ctx, env):
     compile_flags = _replace_in_flags(compile_flags, "$SDKTARGETSYSROOT", "external/{}/{}".format(ctx.attr.name, target_sysroot))
     link_flags = _replace_in_flags(link_flags, "$SDKTARGETSYSROOT", "external/{}/{}".format(ctx.attr.name, target_sysroot))
 
+    res = ctx.execute([ctx.path(ctx.attr._post_script), target_sysroot])
+    if res.return_code:
+        fail("error post patching Yocto SDK:\n" + res.stdout + res.stderr)
+
     tool_paths = {
         "addr2line": "/bin/false",
         "ar": "{}-ar".format(target_prefix),
@@ -277,6 +281,12 @@ Authorization: Bearer RANDOM-TOKEN
         "strip_prefix": attr.string(
             mandatory = False,
             doc = "Strip directory while extracting the archive.",
+        ),
+        "_post_script": attr.label(
+            default = Label("//toolchains/private/scripts:post_extract.sh"),
+            cfg = "exec",
+            executable = True,
+            allow_files = False,
         ),
     },
     environ = [
