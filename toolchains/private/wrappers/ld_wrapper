@@ -1,0 +1,6 @@
+#!/bin/bash --norc
+
+exec "{native_sysroot}"/lib/ld-linux-x86-64.so.2 \
+  --inhibit-cache --inhibit-rpath '' \
+  --library-path "{native_sysroot}/lib:{native_sysroot}/usr/lib" \
+  "${@}"
