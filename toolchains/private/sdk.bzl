@@ -2,9 +2,19 @@
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_netrc", "read_user_netrc", "use_netrc")
+
+def _get_auth(ctx):
+    """Given the list of URLs obtain the correct auth dict."""
+    if ctx.attr.netrc:
+        netrc = read_netrc(ctx, ctx.attr.netrc)
+    else:
+        netrc = read_user_netrc(ctx)
+    return use_netrc(netrc, ctx.attr.urls, ctx.attr.auth_patterns)
 
 def _sdk_download(ctx):
     installer = ""
+    auth = _get_auth(ctx)
 
     if ctx.attr.urls[0].endswith(".sh"):
         # Default yocto installer script
@@ -13,6 +23,7 @@ def _sdk_download(ctx):
             url = ctx.attr.urls,
             output = installer,
             sha256 = ctx.attr.sha256,
+            auth = auth,
         )
     elif not ctx.attr.installer:
         fail("Attribute installer is mandatory if URL points to an archive.")
@@ -23,6 +34,7 @@ def _sdk_download(ctx):
             url = ctx.attr.urls,
             sha256 = ctx.attr.sha256,
             stripPrefix = ctx.attr.strip_prefix,
+            auth = auth,
         )
 
     ctx.report_progress("Extracting Yocto toolchain {}".format(installer))
@@ -213,6 +225,36 @@ This must match the SHA-256 of the file downloaded. _It is a security risk
 to omit the SHA-256 as remote files can change._ At best omitting this
 field will make your build non-hermetic. It is optional to make development
 easier this attribute should be set before shipping.""",
+        ),
+        "netrc": attr.string(
+            doc = "Location of the .netrc file to use for authentication",
+        ),
+        "auth_patterns": attr.string_dict(
+            doc = """An optional dict mapping host names to custom authorization patterns.
+
+If a URL's host name is present in this dict the value will be used as a pattern when
+generating the authorization header for the http request. This enables the use of custom
+authorization schemes used in a lot of common cloud storage providers.
+The pattern currently supports 2 tokens: <code>&lt;login&gt;</code> and
+<code>&lt;password&gt;</code>, which are replaced with their equivalent value
+in the netrc file for the same host name. After formatting, the result is set
+as the value for the <code>Authorization</code> field of the HTTP request.
+Example attribute and netrc for a http download to an oauth2 enabled API using a bearer token:
+<pre>
+auth_patterns = {
+    "storage.cloudprovider.com": "Bearer &lt;password&gt;"
+}
+</pre>
+netrc:
+<pre>
+machine storage.cloudprovider.com
+        password RANDOM-TOKEN
+</pre>
+The final HTTP request would have the following header:
+<pre>
+Authorization: Bearer RANDOM-TOKEN
+</pre>
+""",
         ),
         "identifier": attr.string(
             mandatory = False,
