@@ -49,6 +49,7 @@ filegroup(
         "{target_prefix}-ar",
         "{target_prefix}-gcc",
         "{target_prefix}-ld",
+        "real-ld",
     ],
 )
 
