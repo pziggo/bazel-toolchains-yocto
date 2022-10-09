@@ -199,6 +199,16 @@ def _sdk_generate_config(ctx, env):
             },
         )
 
+    ctx.template(
+        "toolchain/as",
+        Label("//toolchains/private:wrappers/as_wrapper"),
+        executable = True,
+        substitutions = {
+            "{native_sysroot}": "external/{}/{}".format(ctx.attr.name, native_sysroot),
+            "{target_prefix}": target_prefix,
+        },
+    )
+
 def _yocto_download_sdk_impl(ctx):
     _sdk_download(ctx)
     env = _sdk_environment_setup(ctx)

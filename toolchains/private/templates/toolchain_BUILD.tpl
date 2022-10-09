@@ -34,6 +34,7 @@ filegroup(
         "{target_prefix}-as",
         "{target_prefix}-cpp",
         "{target_prefix}-gcc",
+        "as",
     ],
 )
 
