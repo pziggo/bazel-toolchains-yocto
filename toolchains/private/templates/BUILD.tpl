@@ -2,6 +2,9 @@ filegroup(
     name = "target_sysroot_minimal",
     srcs = glob(
         [
+            # Determine "#include <...>" search start
+            # echo | {target_prefix}-gcc --sysroot={target_sysroot} -fno-canonical-system-headers -no-canonical-prefixes -E -Wp,-v -
+            "{native_sysroot}/usr/lib/{target_prefix}/**",
             "{target_sysroot}/lib/*.so*",
             "{target_sysroot}/usr/include/**",
             "{target_sysroot}/usr/lib/**/*.a",
