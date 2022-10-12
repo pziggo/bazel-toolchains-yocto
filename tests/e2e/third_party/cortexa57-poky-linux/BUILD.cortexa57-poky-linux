@@ -1,0 +1,121 @@
+# Static build file for testing
+
+filegroup(
+    name = "target_sysroot_minimal",
+    srcs = glob(
+        [
+            "sysroots/x86_64-pokysdk-linux/usr/lib/aarch64-poky-linux/**",
+            "sysroots/cortexa57-poky-linux/lib/*.so*",
+            "sysroots/cortexa57-poky-linux/usr/include/**",
+            "sysroots/cortexa57-poky-linux/usr/lib/**/*.a",
+            "sysroots/cortexa57-poky-linux/usr/lib/**/*.o",
+            "sysroots/cortexa57-poky-linux/usr/lib/**/*.so*",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "native_runtime",
+    srcs = glob([
+        "sysroots/x86_64-pokysdk-linux/lib/ld-*.so",
+        "sysroots/x86_64-pokysdk-linux/lib/ld-linux*.so.*",
+        "sysroots/x86_64-pokysdk-linux/lib/libc.so.*",
+        "sysroots/x86_64-pokysdk-linux/lib/libdl.so.*",
+        "sysroots/x86_64-pokysdk-linux/lib/libm.so.*",
+        "sysroots/x86_64-pokysdk-linux/lib/libpthread.so.*",
+        "sysroots/x86_64-pokysdk-linux/usr/lib/lib*.so.*",
+        "sysroots/x86_64-pokysdk-linux/usr/libexec/aarch64-poky-linux/**",
+    ]),
+)
+
+filegroup(
+    name = "gcc",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-g++",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-gcc",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "cpp",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-cpp",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ar",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-ar",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ld",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-ld",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "nm",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-nm",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "objcopy",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-objcopy",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "objdump",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-objdump",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "strip",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-strip",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "as",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-as",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "addr2line",
+    srcs = [
+        ":native_runtime",
+        "sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-addr2line",
+    ],
+    visibility = ["//visibility:public"],
+)
