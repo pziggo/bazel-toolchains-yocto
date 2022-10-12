@@ -131,16 +131,19 @@ def _sdk_generate_config(ctx, env):
         "strip": "{}-strip".format(target_prefix),
     }
 
-    ctx.template(
-        "BUILD.bazel",
-        Label("//toolchains/private:templates/BUILD.tpl"),
-        executable = False,
-        substitutions = {
-            "{native_sysroot}": native_sysroot,
-            "{target_sysroot}": target_sysroot,
-            "{target_prefix}": target_prefix,
-        },
-    )
+    if ctx.attr.build_file:
+        ctx.file("BUILD.bazel", ctx.read(ctx.attr.build_file))
+    else:
+        ctx.template(
+            "BUILD.bazel",
+            Label("//toolchains/private:templates/BUILD.tpl"),
+            executable = False,
+            substitutions = {
+                "{native_sysroot}": native_sysroot,
+                "{target_sysroot}": target_sysroot,
+                "{target_prefix}": target_prefix,
+            },
+        )
 
     ctx.template(
         "toolchain/BUILD.bazel",
@@ -286,6 +289,15 @@ Authorization: Bearer RANDOM-TOKEN
         "strip_prefix": attr.string(
             mandatory = False,
             doc = "Strip directory while extracting the archive.",
+        ),
+        "build_file": attr.label(
+            allow_single_file = True,
+            doc = """
+The file to use as the BUILD file for the toolchain repository.
+The file does not need to be named BUILD, but can be (something
+like BUILD.new-repo-name may work well for distinguishing it
+from the repository's actual BUILD files.
+""",
         ),
         "bazel_toolchains_yocto_workspace_name": attr.string(
             doc = "The name given to the bazel-toolchains-yocto repository, if the default was not used.",
