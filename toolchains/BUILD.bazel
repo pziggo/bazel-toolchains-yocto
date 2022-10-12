@@ -6,6 +6,12 @@ exports_files(
 )
 
 bzl_library(
+    name = "cc_toolchain_config",
+    srcs = ["cc_toolchain_config.bzl"],
+    visibility = ["//visibility:public"],
+)
+
+bzl_library(
     name = "defs",
     srcs = ["defs.bzl"],
     visibility = ["//visibility:public"],

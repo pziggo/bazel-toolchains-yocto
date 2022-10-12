@@ -147,6 +147,7 @@ def _sdk_generate_config(ctx, env):
         Label("//toolchains/private:templates/toolchain_BUILD.tpl"),
         executable = False,
         substitutions = {
+            "{bazel_toolchains_yocto_workspace_name}": ctx.attr.bazel_toolchains_yocto_workspace_name,
             "{target_arch}": target_arch,
             "{target_os}": target_os,
             "{target_prefix}": target_prefix,
@@ -164,12 +165,6 @@ def _sdk_generate_config(ctx, env):
             "{opt_link_flags}": str(opt_link_flags),
             "{builtin_sysroot}": builtin_sysroot,
         },
-    )
-
-    ctx.template(
-        "toolchain/cc_config.bzl",
-        Label("//toolchains/private:templates/toolchain_cc_config.tpl"),
-        executable = False,
     )
 
     ctx.template(
@@ -291,6 +286,10 @@ Authorization: Bearer RANDOM-TOKEN
         "strip_prefix": attr.string(
             mandatory = False,
             doc = "Strip directory while extracting the archive.",
+        ),
+        "bazel_toolchains_yocto_workspace_name": attr.string(
+            doc = "The name given to the bazel-toolchains-yocto repository, if the default was not used.",
+            default = "bazel_toolchains_yocto",
         ),
         "_post_script": attr.label(
             default = Label("//toolchains/private/scripts:post_extract.sh"),

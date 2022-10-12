@@ -1,4 +1,4 @@
-load(":cc_config.bzl", "cc_toolchain_config")
+load("@{bazel_toolchains_yocto_workspace_name}//toolchains:cc_toolchain_config.bzl", "cc_toolchain_config")
 
 filegroup(
     name = "ld-wrapper",
