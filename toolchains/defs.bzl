@@ -4,6 +4,9 @@
 load(
     "//toolchains/private:sdk.bzl",
     _yocto_download_sdk = "yocto_download_sdk",
+    _yocto_local_sdk = "yocto_local_sdk",
 )
 
 yocto_download_sdk = _yocto_download_sdk
+
+yocto_local_sdk = _yocto_local_sdk

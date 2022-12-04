@@ -11,7 +11,7 @@ load("@bazel_toolchains_yocto//toolchains:repositories.bzl", "bazel_toolchains_y
 
 bazel_toolchains_yocto_dependencies()
 
-load("@bazel_toolchains_yocto//toolchains:defs.bzl", "yocto_download_sdk")
+load("@bazel_toolchains_yocto//toolchains:defs.bzl", "yocto_download_sdk", "yocto_local_sdk")
 
 yocto_download_sdk(
     name = "core2-64-poky-linux",
@@ -25,3 +25,5 @@ yocto_download_sdk(
     sha256 = "348afcacadf8a16affc4a7cc077e7512d467033ddaf446533cf19ef377f5ca3e",
     urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.0.4/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.0.4.sh"],
 )
+
+yocto_local_sdk(name = "oe-linux-local")

@@ -226,6 +226,9 @@ def _yocto_download_sdk_impl(ctx):
     env = _sdk_environment_setup(ctx)
     _sdk_generate_config(ctx, env)
 
+def _yocto_local_sdk_impl(ctx):
+    _sdk_generate_config(ctx, ctx.os.environ)
+
 yocto_download_sdk = repository_rule(
     implementation = _yocto_download_sdk_impl,
     attrs = {
@@ -308,6 +311,25 @@ from the repository's actual BUILD files.
             cfg = "exec",
             executable = True,
             allow_files = False,
+        ),
+    },
+)
+
+yocto_local_sdk = repository_rule(
+    implementation = _yocto_local_sdk_impl,
+    attrs = {
+        "build_file": attr.label(
+            allow_single_file = True,
+            doc = """
+The file to use as the BUILD file for the toolchain repository.
+The file does not need to be named BUILD, but can be (something
+like BUILD.new-repo-name may work well for distinguishing it
+from the repository's actual BUILD files.
+""",
+        ),
+        "bazel_toolchains_yocto_workspace_name": attr.string(
+            doc = "The name given to the bazel-toolchains-yocto repository, if the default was not used.",
+            default = "bazel_toolchains_yocto",
         ),
     },
     environ = [
