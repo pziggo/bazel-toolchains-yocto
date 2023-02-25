@@ -1,0 +1,40 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+bzl_library(
+    name = "build_templates",
+    srcs = ["build_templates.bzl"],
+    visibility = ["//visibility:private"],
+)
+
+bzl_library(
+    name = "common_utils",
+    srcs = ["common_utils.bzl"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "@bazel_skylib//lib:paths",
+    ],
+)
+
+bzl_library(
+    name = "sdk_utils",
+    srcs = ["sdk_utils.bzl"],
+    visibility = ["//yocto:__pkg__"],
+    deps = [
+        ":build_templates",
+        ":common_utils",
+        ":toolchain_template",
+        ":wrapper_templates",
+    ],
+)
+
+bzl_library(
+    name = "toolchain_template",
+    srcs = ["toolchain_template.bzl"],
+    visibility = ["//visibility:private"],
+)
+
+bzl_library(
+    name = "wrapper_templates",
+    srcs = ["wrapper_templates.bzl"],
+    visibility = ["//visibility:private"],
+)

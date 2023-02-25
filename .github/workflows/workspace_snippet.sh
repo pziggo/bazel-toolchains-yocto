@@ -19,7 +19,7 @@ http_archive(
     url = "https://github.com/pziggo/bazel-toolchains-yocto/archive/refs/tags/${TAG}.tar.gz",
 )
 
-load("@bazel_toolchains_yocto//toolchains:repositories.bzl", "bazel_toolchains_yocto_dependencies")
+load("@bazel_toolchains_yocto//yocto:repositories.bzl", "bazel_toolchains_yocto_dependencies")
 
 bazel_toolchains_yocto_dependencies()
 \`\`\`

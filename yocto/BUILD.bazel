@@ -6,17 +6,13 @@ exports_files(
 )
 
 bzl_library(
-    name = "cc_toolchain_config",
-    srcs = ["cc_toolchain_config.bzl"],
-    visibility = ["//visibility:public"],
-)
-
-bzl_library(
     name = "defs",
     srcs = ["defs.bzl"],
     visibility = ["//visibility:public"],
     deps = [
-        "//toolchains/private:sdk",
+        "//yocto/private:sdk_utils",
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
     ],
 )
 
@@ -24,4 +20,8 @@ bzl_library(
     name = "repositories",
     srcs = ["repositories.bzl"],
     visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
+    ],
 )
