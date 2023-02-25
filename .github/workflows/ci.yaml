@@ -31,8 +31,15 @@ jobs:
           key: bazel-cache-${{ hashFiles('**/BUILD.bazel', '**/*.bzl', 'WORKSPACE') }}
           restore-keys: bazel-cache-
 
-      - name: bazel test //...
+      - name: Bazel test
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
         run: bazel --bazelrc=${GITHUB_WORKSPACE}/.github/workflows/ci.bazelrc --bazelrc=.bazelrc test //...
+
+      - name: Bazel e2e cross-compile build
+        env:
+          # Bazelisk will download bazel to here, ensure it is cached between runs.
+          XDG_CACHE_HOME: ~/.cache/bazel-repo
+        working-directory: "tests/e2e"
+        run: bazel --bazelrc=${GITHUB_WORKSPACE}/.github/workflows/ci.bazelrc --bazelrc=.bazelrc build --config=cortexa57 //...
