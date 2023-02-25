@@ -1,7 +1,7 @@
 """Macros for downloading yocto toolchains"""
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
-load("//yocto/private:sdk_utils.bzl", "install_and_setup_sdk")
+load("//yocto/private:sdk_utils.bzl", "install_and_setup_sdk", "link_and_setup_sdk")
 
 def http_yocto_toolchain_archive(
         name,
@@ -73,8 +73,9 @@ def local_yocto_toolchain(
         name (str): Name of the final toolchain repository
         path (str): local path to the repository
     """
-    native.new_local_repository(
-        name = "{}_dl".format(name),
+    link_and_setup_sdk(
+        name = name,
         path = path,
-        build_file_content = 'exports_files(glob(["**"]))',
+        build_file = build_file,
+        build_file_content = build_file_content,
     )
