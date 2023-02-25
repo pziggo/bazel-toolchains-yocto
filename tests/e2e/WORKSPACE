@@ -7,21 +7,37 @@ local_repository(
     path = "../..",
 )
 
-load("@bazel_toolchains_yocto//toolchains:repositories.bzl", "bazel_toolchains_yocto_dependencies")
+load("@bazel_toolchains_yocto//yocto:repositories.bzl", "bazel_toolchains_yocto_dependencies")
 
 bazel_toolchains_yocto_dependencies()
 
-load("@bazel_toolchains_yocto//toolchains:defs.bzl", "yocto_download_sdk")
+load("@bazel_toolchains_yocto//yocto:defs.bzl", "http_yocto_toolchain_archive", "http_yocto_toolchain_file", "local_yocto_toolchain")
 
-yocto_download_sdk(
+http_yocto_toolchain_file(
     name = "core2-64-poky-linux",
-    sha256 = "9e9b4673b7bfc061bc501f17362c8e81ff300c725405c48fdf3d39f53105a448",
-    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.0.4/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.0.4.sh"],
+    environment_setup = "environment-setup-core2-64-poky-linux",
+    executable = True,
+    sha256 = "941269887d2acd2c7f2f5129c1eb4993b3144e6a36eddd8c1664de533e3ba98e",
+    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.1.2/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.1.2.sh"],
 )
 
-yocto_download_sdk(
-    name = "cortexa57-poky-linux",
+http_yocto_toolchain_file(
+    name = "cortexa57-poky-linux_new",
     build_file = "@//third_party/cortexa57-poky-linux:BUILD.cortexa57-poky-linux",
-    sha256 = "348afcacadf8a16affc4a7cc077e7512d467033ddaf446533cf19ef377f5ca3e",
-    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.0.4/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.0.4.sh"],
+    environment_setup = "environment-setup-cortexa57-poky-linux",
+    sha256 = "456eb2820f1ec975f01e30c6df2021ca7030080fd299767a96757e63da7cb488",
+    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.1.2/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.1.2.sh"],
+)
+
+http_yocto_toolchain_archive(
+    name = "core2-64-poky-linux-4_0",
+    environment_setup = "environment-setup-core2-64-poky-linux",
+    sdk_installer = "poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.0.4.sh",
+    sha256 = "1db6f09c8f9c6c1c1c6925b1dddeeed46d91c668fa4c911c79c3741b54040fc4",
+    urls = ["http://localhost:8080/downloads/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.0.4.tar.gz"],
+)
+
+local_yocto_toolchain(
+    name = "cortexa57-poky-linux-4_0",
+    path = "../dl_cache/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.0.4",
 )

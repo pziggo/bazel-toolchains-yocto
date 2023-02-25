@@ -1,4 +1,7 @@
-load("@{bazel_toolchains_yocto_workspace_name}//toolchains:cc_toolchain_config.bzl", "cc_toolchain_config")
+"""Template macro for creating a toolchain build file in repository rules"""
+
+_build_file_toolchain_template = """\
+load("@bazel_tools//tools/cpp:unix_cc_toolchain_config.bzl", "cc_toolchain_config")
 
 filegroup(
     name = "ld-wrapper",
@@ -108,6 +111,8 @@ cc_toolchain_config(
     archive_flags = {archive_flags},
     link_libs = {link_libs},
     opt_link_flags = {opt_link_flags},
+    unfiltered_compile_flags = {unfiltered_compile_flags},
+    supports_start_end_lib = False,
     builtin_sysroot = "{builtin_sysroot}",
 )
 
@@ -138,3 +143,34 @@ toolchain(
     toolchain = ":cc-target",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
+"""
+
+def BUILD_for_toolchain(name, config):
+    """Emits a BUILD file for the extracted SDK tree.
+
+    Args:
+        name (str): Name of the toolchain
+        config (struct): Yocto SDK configuration
+
+    Returns:
+        str: The contents for a BUILD file
+    """
+    return _build_file_toolchain_template.format(
+        name = name,
+        archive_flags = str(config.archive_flags),
+        builtin_sysroot = str(config.builtin_sysroot),
+        compile_flags = str(config.compile_flags),
+        cxx_builtin_include_directories = str(config.cxx_builtin_include_directories),
+        cxx_flags = str(config.cxx_flags),
+        dbg_compile_flags = str(config.dbg_compile_flags),
+        link_flags = str(config.link_flags),
+        link_libs = str(config.link_libs),
+        native_prefix = config.native_prefix,
+        opt_compile_flags = str(config.opt_compile_flags),
+        opt_link_flags = str(config.opt_link_flags),
+        target_arch = config.target_arch,
+        target_os = config.target_os,
+        target_prefix = config.target_prefix,
+        tool_paths = str(config.tool_paths),
+        unfiltered_compile_flags = config.unfiltered_compile_flags,
+    )

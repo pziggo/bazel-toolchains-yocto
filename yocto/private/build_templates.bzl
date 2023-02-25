@@ -1,9 +1,12 @@
+""" Template makro for root BUILD file """
+
+# Determine "#include <...>" search start
+# echo | {target_prefix}-gcc --sysroot={target_sysroot} -fno-canonical-system-headers -no-canonical-prefixes -E -Wp,-v -
+_build_file_for_sdk_tree_template = """\
 filegroup(
     name = "target_sysroot_minimal",
     srcs = glob(
         [
-            # Determine "#include <...>" search start
-            # echo | {target_prefix}-gcc --sysroot={target_sysroot} -fno-canonical-system-headers -no-canonical-prefixes -E -Wp,-v -
             "{native_sysroot}/usr/lib/{target_prefix}/**",
             "{target_sysroot}/lib/*.so*",
             "{target_sysroot}/usr/include/**",
@@ -119,3 +122,43 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
+"""
+
+def BUILD_for_sdk_tree(config):
+    """Emits a BUILD file for the extracted SDK tree.
+
+    Args:
+        config (struct): Yocto SDK configuration
+
+    Returns:
+        str: The contents for a BUILD file
+    """
+    return _build_file_for_sdk_tree_template.format(
+        native_sysroot = config.native_sysroot,
+        target_prefix = config.target_prefix,
+        target_sysroot = config.target_sysroot,
+    )
+
+_build_file_for_platform_template = """\
+platform(
+    name = "platform-target",
+    constraint_values = [
+        "@platforms//os:{target_os}",
+        "@platforms//cpu:{target_arch}",
+    ],
+)
+"""
+
+def BUILD_for_platform(config):
+    """Emits a BUILD file for the paltform config.
+
+    Args:
+        config (struct): Yocto SDK configuration
+
+    Returns:
+        str: The contents for a BUILD file
+    """
+    return _build_file_for_platform_template.format(
+        target_os = config.target_os,
+        target_arch = config.target_arch,
+    )
