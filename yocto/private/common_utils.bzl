@@ -2,9 +2,25 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 
-def _format_flags(iterable):
-    """Format flags and remove empty elements."""
-    return _unique([element for element in iterable if element])
+def format_command_options(options, strip_command = False):
+    """Convert command options from string to list
+
+    Args:
+        options (str): Command line options
+        strip_command (bool, opional): Wether to strip the first element supposed to be the command or not
+
+    Returns:
+        List: The resulting command options
+    """
+    elements = []
+    for element in options.split(" "):
+        if element.strip("\""):
+            elements.append(element.strip("\""))
+
+    if strip_command:
+        elements.pop(0)
+
+    return elements
 
 def _replace_in_flags(iterable, old, new):
     """Replace string in all occurences of the given flags."""
@@ -13,17 +29,9 @@ def _replace_in_flags(iterable, old, new):
         elements.append(element.replace(old, new))
     return elements
 
-def _unique(iterable):
-    """Remove duplicates from a list."""
-    elements = []
-    for element in iterable:
-        if element not in elements:
-            elements.append(element)
-    return elements
-
 def env_pair(line):
     k, _, v = line.partition("=")
-    return {k: v.strip("\"").split(" ")}
+    return {k: v.strip("\"")}
 
 def env_to_config(repository_ctx, env):
     """Convert SDK configuration from environment dict into a config structure.
@@ -39,31 +47,31 @@ def env_to_config(repository_ctx, env):
 
     archive_flags = []
     builtin_sysroot = ""
-    compile_flags = _format_flags(env.get("CC")[1:])
+    compile_flags = format_command_options(env.get("CC"), True)
     cxx_builtin_include_directories = []
     dbg_compile_flags = []
-    link_flags = _format_flags(env.get("LD")[1:])
+    link_flags = format_command_options(env.get("LD"), True)
     link_libs = ["-lstdc++", "-lm"]
-    native_prefix = paths.basename(env.get("OECORE_NATIVE_SYSROOT")[0])
-    native_sysroot = paths.relativize(env.get("OECORE_NATIVE_SYSROOT")[0], repo_root)
+    native_prefix = paths.basename(env.get("OECORE_NATIVE_SYSROOT"))
+    native_sysroot = paths.relativize(env.get("OECORE_NATIVE_SYSROOT"), repo_root)
     opt_compile_flags = []
     opt_link_flags = []
-    target_arch = env.get("OECORE_TARGET_ARCH")[0]
-    target_os = env.get("OECORE_TARGET_OS")[0]
-    target_prefix = env.get("TARGET_PREFIX")[0].removesuffix("-")
-    target_sysroot = paths.relativize(env.get("SDKTARGETSYSROOT")[0], repo_root)
+    target_arch = env.get("OECORE_TARGET_ARCH")
+    target_os = env.get("OECORE_TARGET_OS")
+    target_prefix = env.get("TARGET_PREFIX").removesuffix("-")
+    target_sysroot = paths.relativize(env.get("SDKTARGETSYSROOT"), repo_root)
     unfiltered_compile_flags = [
         "-no-canonical-prefixes",
         "-fno-canonical-system-headers",
         "-Wno-builtin-macro-redefined",
     ]
 
-    compile_flags.extend(_format_flags(env.get("CFLAGS")))
-    link_flags.extend(_format_flags(env.get("LDFLAGS")))
+    compile_flags.extend(format_command_options(env.get("CFLAGS")))
+    link_flags.extend(format_command_options(env.get("LDFLAGS")))
 
     # only add flags if not in compile_flags
-    cxx_flags = [flag for flag in _format_flags(env.get("CXX")[1:]) if flag not in compile_flags]
-    cxx_flags.extend([flag for flag in _format_flags(env.get("CXXFLAGS")) if flag not in compile_flags])
+    cxx_flags = [flag for flag in format_command_options(env.get("CXX"), True) if flag not in compile_flags]
+    cxx_flags.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
 
     tool_paths = {
         "addr2line": "/bin/false",
