@@ -66,12 +66,16 @@ def http_yocto_toolchain_file(
 
 def local_yocto_toolchain(
         name,
-        path):
+        path,
+        build_file = None,
+        build_file_content = ""):
     """Using local installed toolchain
 
     Args:
         name (str): Name of the final toolchain repository
         path (str): local path to the repository
+        build_file (label, optional): The file to use as the BUILD file for the SDK tree.
+        build_file_content (label, optional): The content for the BUILD file for the SDK tree.
     """
     native.new_local_repository(
         name = "{}_dl".format(name),
