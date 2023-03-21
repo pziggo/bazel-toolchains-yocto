@@ -22,6 +22,41 @@ def format_command_options(options, strip_command = False):
 
     return elements
 
+def relativize_sysroot_path(
+        repository_name,
+        repository_path,
+        sysroot):
+    """Convert absolut sysroot path from env to relative path in outputBase
+
+    Args:
+        repository_name (str): Name of the external repository
+        repository_path (str): Absolut path to external repository
+        sysroot (str): Origin absolut sysroot path
+
+    Returns:
+        Str: The relative path in outputBase
+    """
+    relative_path = ""
+    skip_anchor = 0
+
+    repository_segments = paths.normalize(repository_path).split("/")
+    sysroot_segments = paths.normalize(sysroot).split("/")
+
+    sysroot_length = len(sysroot_segments)
+    anchor = repository_segments[-1]
+
+    if repository_name == anchor:
+        skip_anchor = 1
+
+    for i in range(sysroot_length):
+        if sysroot_segments[i] == anchor:
+            relative_path = "/".join(sysroot_segments[-(sysroot_length - i - skip_anchor):])
+
+    if not len(relative_path):
+        fail("Path '%s' and '%s' have no common anchor" % (sysroot, repository_path))
+
+    return relative_path
+
 def remove_elements_starting_with_keyword(keyword, my_list):
     return [element for element in my_list if not element.startswith(keyword)]
 
@@ -29,17 +64,19 @@ def env_pair(line):
     k, _, v = line.partition("=")
     return {k: v.strip("\"")}
 
-def env_to_config(repository_ctx, env):
+def env_to_config(repository_ctx, env, relative_root = "."):
     """Convert SDK configuration from environment dict into a config structure.
 
     Args:
         repository_ctx (repository_ctx): The rule's context object.
         env (dict): Environment variables to read toolchain config from.
+        relative_root (str, optional): Root for relative paths
 
     Returns:
         struct: The toolchain configuration
     """
-    repo_root = str(repository_ctx.path("."))
+
+    repo_root = str(repository_ctx.path(relative_root))
 
     archive_flags = []
 
@@ -49,13 +86,21 @@ def env_to_config(repository_ctx, env):
     link_flags = format_command_options(env.get("LD"), True)
     link_libs = ["-lstdc++", "-lm"]
     native_prefix = paths.basename(env.get("OECORE_NATIVE_SYSROOT"))
-    native_sysroot = paths.relativize(env.get("OECORE_NATIVE_SYSROOT"), repo_root)
+    native_sysroot = relativize_sysroot_path(
+        repository_ctx.name,
+        repo_root,
+        env.get("OECORE_NATIVE_SYSROOT"),
+    )
     opt_compile_flags = []
     opt_link_flags = []
     target_arch = env.get("OECORE_TARGET_ARCH")
     target_os = env.get("OECORE_TARGET_OS")
     target_prefix = env.get("TARGET_PREFIX").removesuffix("-")
-    target_sysroot = paths.relativize(env.get("SDKTARGETSYSROOT"), repo_root)
+    target_sysroot = relativize_sysroot_path(
+        repository_ctx.name,
+        repo_root,
+        env.get("SDKTARGETSYSROOT"),
+    )
     unfiltered_compile_flags = [
         "-no-canonical-prefixes",
         "-fno-canonical-system-headers",
