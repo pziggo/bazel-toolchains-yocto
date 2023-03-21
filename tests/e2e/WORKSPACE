@@ -39,5 +39,5 @@ http_yocto_toolchain_archive(
 
 local_yocto_toolchain(
     name = "cortexa57-poky-linux-4_0",
-    path = "../dl_cache/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.0.4",
+    path = "/opt/poky/4.0.4",
 )
