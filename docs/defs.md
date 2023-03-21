@@ -53,7 +53,7 @@ Download self extracting toolchain script
 ## local_yocto_toolchain
 
 <pre>
-local_yocto_toolchain(<a href="#local_yocto_toolchain-name">name</a>, <a href="#local_yocto_toolchain-path">path</a>)
+local_yocto_toolchain(<a href="#local_yocto_toolchain-name">name</a>, <a href="#local_yocto_toolchain-path">path</a>, <a href="#local_yocto_toolchain-build_file">build_file</a>, <a href="#local_yocto_toolchain-build_file_content">build_file_content</a>)
 </pre>
 
 Using local installed toolchain
@@ -65,5 +65,7 @@ Using local installed toolchain
 | :------------- | :------------- | :------------- |
 | <a id="local_yocto_toolchain-name"></a>name |  Name of the final toolchain repository   |  none |
 | <a id="local_yocto_toolchain-path"></a>path |  local path to the repository   |  none |
+| <a id="local_yocto_toolchain-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  <code>None</code> |
+| <a id="local_yocto_toolchain-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  <code>""</code> |
 
 
