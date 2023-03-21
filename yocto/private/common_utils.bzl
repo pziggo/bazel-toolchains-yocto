@@ -22,12 +22,8 @@ def format_command_options(options, strip_command = False):
 
     return elements
 
-def _replace_in_flags(iterable, old, new):
-    """Replace string in all occurences of the given flags."""
-    elements = []
-    for element in iterable:
-        elements.append(element.replace(old, new))
-    return elements
+def remove_elements_starting_with_keyword(keyword, my_list):
+    return [element for element in my_list if not element.startswith(keyword)]
 
 def env_pair(line):
     k, _, v = line.partition("=")
@@ -46,7 +42,7 @@ def env_to_config(repository_ctx, env):
     repo_root = str(repository_ctx.path("."))
 
     archive_flags = []
-    builtin_sysroot = ""
+
     compile_flags = format_command_options(env.get("CC"), True)
     cxx_builtin_include_directories = []
     dbg_compile_flags = []
@@ -65,6 +61,11 @@ def env_to_config(repository_ctx, env):
         "-fno-canonical-system-headers",
         "-Wno-builtin-macro-redefined",
     ]
+
+    builtin_sysroot = "external/{}/{}".format(
+        repository_ctx.attr.name,
+        target_sysroot,
+    )
 
     compile_flags.extend(format_command_options(env.get("CFLAGS")))
     link_flags.extend(format_command_options(env.get("LDFLAGS")))
@@ -90,22 +91,9 @@ def env_to_config(repository_ctx, env):
         "strip": "{}-strip".format(target_prefix),
     }
 
-    compile_flags = _replace_in_flags(
-        compile_flags,
-        "$SDKTARGETSYSROOT",
-        "external/{}/{}".format(
-            repository_ctx.attr.name,
-            target_sysroot,
-        ),
-    )
-    link_flags = _replace_in_flags(
-        link_flags,
-        "$SDKTARGETSYSROOT",
-        "external/{}/{}".format(
-            repository_ctx.attr.name,
-            target_sysroot,
-        ),
-    )
+    # sysroot will be added by bazel toolchain config via builtin_sysroot variable
+    compile_flags = remove_elements_starting_with_keyword("--sysroot", compile_flags)
+    link_flags = remove_elements_starting_with_keyword("--sysroot", link_flags)
 
     return struct(
         archive_flags = archive_flags,
