@@ -43,15 +43,15 @@ filegroup(
 
 filegroup(
     name = "linker_files",
-    srcs = [
-        "//:ar",
-        "//:gcc",
-        "//:ld",
-        "//:target_sysroot_minimal",
+    srcs = glob(["lib*.so"]) + [
         ":ld-wrapper",
         "{target_prefix}-ar",
         "{target_prefix}-gcc",
         "{target_prefix}-ld",
+        "//:ar",
+        "//:gcc",
+        "//:ld",
+        "//:target_sysroot_minimal",
         "real-ld",
     ],
 )
