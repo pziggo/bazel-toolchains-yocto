@@ -116,10 +116,20 @@ def _install_sdk(repository_ctx):
     if res.return_code:
         fail("error installing Yocto SDK:\n" + res.stdout + res.stderr)
 
-def _post_patch(repository_ctx, config):
-    res = repository_ctx.execute([repository_ctx.path(repository_ctx.attr._post_script), config.target_sysroot])
-    if res.return_code:
-        fail("error post patching Yocto SDK:\n" + res.stdout + res.stderr)
+def _fix_ld_scripts(repository_ctx, config):
+    """Fix the yocto ld scripts
+
+    Yocto omits the sysroot prefix in the ld scripts within the toolchain. In
+    case or cross-compilation, this ignores the given sysroot paths and thus
+    the linker tries to link against the absolut path which is pointing to the
+    host libraries.
+    """
+    for linker_script in ["/usr/lib/libc.so", "/usr/lib/libm.so", "/usr/lib/libpthread.so"]:
+        res = repository_ctx.execute([repository_ctx.path(repository_ctx.attr._post_script), config.target_sysroot, linker_script])
+        if res.return_code == 0 and res.stdout:
+            repository_ctx.file("bazel/toolchain/{}".format(paths.basename(linker_script)), content = res.stdout)
+        elif res.return_code != 0:
+            fail("error post patching Yocto SDK: \n" + res.stdout + res.stderr)
 
 def _install_and_setup_sdk_impl(repository_ctx):
     if repository_ctx.attr.build_file and repository_ctx.attr.build_file_content:
@@ -129,7 +139,7 @@ def _install_and_setup_sdk_impl(repository_ctx):
 
     env = _read_env_from_environment_setup(repository_ctx)
     config = env_to_config(repository_ctx, env)
-    _post_patch(repository_ctx, config)
+    _fix_ld_scripts(repository_ctx, config)
     _setup_bazel_files(repository_ctx, config)
 
 install_and_setup_sdk = repository_rule(
