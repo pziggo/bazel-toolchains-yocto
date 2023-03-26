@@ -242,5 +242,6 @@ link_and_setup_sdk = repository_rule(
         "OECORE_TARGET_OS",
         "SDKTARGETSYSROOT",
         "TARGET_PREFIX",
+        "UNINATIVE_LOADER",
     ],
 )
