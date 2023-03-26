@@ -38,6 +38,5 @@ http_yocto_toolchain_archive(
 )
 
 local_yocto_toolchain(
-    name = "cortexa57-poky-linux-4_0",
-    path = "/opt/poky/4.0.4",
+    name = "yocto-local",
 )
