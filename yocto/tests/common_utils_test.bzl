@@ -43,6 +43,15 @@ def _relativize_sysroot_path_test_impl(ctx):
             "/bazel/outputBase/external/repository/sysroots/a",
         ),
     )
+    asserts.equals(
+        env,
+        "a",
+        relativize_sysroot_path(
+            "repository",
+            "/bazel/outputBase/external/repository",
+            "/external/path/to/sysroots/a",
+        ),
+    )
     return unittest.end(env)
 
 # The unittest library requires that we export the test cases as named test rules,

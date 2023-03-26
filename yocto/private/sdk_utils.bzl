@@ -133,14 +133,14 @@ def _fix_ld_scripts(repository_ctx, config):
             fail("error post patching Yocto SDK: \n" + res.stdout + res.stderr)
 
 def _link_sdk(repository_ctx):
-    link_name = repository_ctx.path(repository_ctx.attr.path).basename
+    native_sysroot = repository_ctx.os.environ.get("OECORE_NATIVE_SYSROOT")
+    target_sysroot = repository_ctx.os.environ.get("SDKTARGETSYSROOT")
 
-    if paths.is_absolute(repository_ctx.attr.path):
-        repository_ctx.symlink(repository_ctx.attr.path, link_name)
-    else:
-        repository_ctx.symlink(paths.join(str(repository_ctx.workspace_root), repository_ctx.attr.path), link_name)
+    native_sysroot_link = repository_ctx.path(native_sysroot).basename
+    target_sysroot_link = repository_ctx.path(target_sysroot).basename
 
-    return link_name
+    repository_ctx.symlink(native_sysroot, native_sysroot_link)
+    repository_ctx.symlink(target_sysroot, target_sysroot_link)
 
 def _install_and_setup_sdk_impl(repository_ctx):
     if repository_ctx.attr.build_file and repository_ctx.attr.build_file_content:
@@ -198,19 +198,13 @@ def _link_and_setup_sdk_impl(repository_ctx):
         fail("Only one of build_file and build_file_content can be provided.")
 
     _link_sdk(repository_ctx)
-    config = env_to_config(repository_ctx, repository_ctx.os.environ, repository_ctx.attr.path)
+    config = env_to_config(repository_ctx, repository_ctx.os.environ)
     _fix_ld_scripts(repository_ctx, config)
     _setup_bazel_files(repository_ctx, config)
 
 link_and_setup_sdk = repository_rule(
     implementation = _link_and_setup_sdk_impl,
     attrs = {
-        "path": attr.string(
-            mandatory = False,
-            doc =
-                "A path on the local filesystem.  " +
-                "This can be either absolute or relative to the main repository's WORKSPACE file.",
-        ),
         "build_file": attr.label(
             allow_single_file = True,
             mandatory = False,

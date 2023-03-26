@@ -53,7 +53,8 @@ def relativize_sysroot_path(
             relative_path = "/".join(sysroot_segments[-(sysroot_length - i - skip_anchor):])
 
     if not len(relative_path):
-        fail("Path '%s' and '%s' have no common anchor" % (sysroot, repository_path))
+        # No common anchor, assume sysroot is external and linked into workspace
+        relative_path = sysroot_segments[-1]
 
     return relative_path
 
