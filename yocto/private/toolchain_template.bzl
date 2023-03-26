@@ -108,7 +108,6 @@ cc_toolchain_config(
     opt_compile_flags = {opt_compile_flags},
     cxx_flags = {cxx_flags},
     link_flags = {link_flags},
-    archive_flags = {archive_flags},
     link_libs = {link_libs},
     opt_link_flags = {opt_link_flags},
     unfiltered_compile_flags = {unfiltered_compile_flags},
@@ -157,7 +156,6 @@ def BUILD_for_toolchain(name, config):
     """
     return _build_file_toolchain_template.format(
         name = name,
-        archive_flags = str(config.archive_flags),
         builtin_sysroot = str(config.builtin_sysroot),
         compile_flags = str(config.compile_flags),
         cxx_builtin_include_directories = str(config.cxx_builtin_include_directories),

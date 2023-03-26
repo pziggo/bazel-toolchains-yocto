@@ -79,8 +79,6 @@ def env_to_config(repository_ctx, env, relative_root = "."):
 
     repo_root = str(repository_ctx.path(relative_root))
 
-    archive_flags = []
-
     compile_flags = format_command_options(env.get("CC"), True)
     cxx_builtin_include_directories = []
     dbg_compile_flags = []
@@ -143,7 +141,6 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     link_flags = remove_elements_starting_with_keyword("--sysroot", link_flags)
 
     return struct(
-        archive_flags = archive_flags,
         builtin_sysroot = builtin_sysroot,
         compile_flags = compile_flags,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
