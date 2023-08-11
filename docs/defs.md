@@ -21,9 +21,9 @@ Download archived toolchain script
 | <a id="http_yocto_toolchain_archive-name"></a>name |  Name of the final toolchain repository   |  none |
 | <a id="http_yocto_toolchain_archive-environment_setup"></a>environment_setup |  Name of the environment setup file   |  none |
 | <a id="http_yocto_toolchain_archive-sdk_installer"></a>sdk_installer |  Name of the self extracting toolchain script   |  none |
-| <a id="http_yocto_toolchain_archive-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  <code>None</code> |
-| <a id="http_yocto_toolchain_archive-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  <code>""</code> |
-| <a id="http_yocto_toolchain_archive-kwargs"></a>kwargs |  Keyword arguments for the <code>http_archive</code>, see https://bazel.build/rules/lib/repo/http#http_archive.   |  none |
+| <a id="http_yocto_toolchain_archive-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  `None` |
+| <a id="http_yocto_toolchain_archive-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  `""` |
+| <a id="http_yocto_toolchain_archive-kwargs"></a>kwargs |  Keyword arguments for the `http_archive`, see https://bazel.build/rules/lib/repo/http#http_archive.   |  none |
 
 
 <a id="http_yocto_toolchain_file"></a>
@@ -43,9 +43,9 @@ Download self extracting toolchain script
 | :------------- | :------------- | :------------- |
 | <a id="http_yocto_toolchain_file-name"></a>name |  Name of the final toolchain repository   |  none |
 | <a id="http_yocto_toolchain_file-environment_setup"></a>environment_setup |  Name of the environment setup file   |  none |
-| <a id="http_yocto_toolchain_file-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  <code>None</code> |
-| <a id="http_yocto_toolchain_file-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  <code>""</code> |
-| <a id="http_yocto_toolchain_file-kwargs"></a>kwargs |  Keyword arguments for the <code>http_file</code>, see https://bazel.build/rules/lib/repo/http#http_file.   |  none |
+| <a id="http_yocto_toolchain_file-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  `None` |
+| <a id="http_yocto_toolchain_file-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  `""` |
+| <a id="http_yocto_toolchain_file-kwargs"></a>kwargs |  Keyword arguments for the `http_file`, see https://bazel.build/rules/lib/repo/http#http_file.   |  none |
 
 
 <a id="local_yocto_toolchain"></a>
@@ -64,7 +64,7 @@ Using local installed toolchain
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="local_yocto_toolchain-name"></a>name |  Name of the final toolchain repository   |  none |
-| <a id="local_yocto_toolchain-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  <code>None</code> |
-| <a id="local_yocto_toolchain-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  <code>""</code> |
+| <a id="local_yocto_toolchain-build_file"></a>build_file |  The file to use as the BUILD file for the SDK tree.   |  `None` |
+| <a id="local_yocto_toolchain-build_file_content"></a>build_file_content |  The content for the BUILD file for the SDK tree.   |  `""` |
 
 
