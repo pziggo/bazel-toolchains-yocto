@@ -18,7 +18,7 @@ def bazel_toolchains_yocto_internal_deps():
 
     http_archive(
         name = "aspect_bazel_lib",
-        sha256 = "9a51150a25ba13e0301b47bbe731aef537330dcc222dc598ebdfe18d2efe2f33",
-        strip_prefix = "bazel-lib-1.34.5",
-        url = "https://github.com/aspect-build/bazel-lib/archive/refs/tags/v1.34.5.tar.gz",
+        sha256 = "76febb5cf3c81f00ae1f0a197bd2d0cfecab4018b2a366eb3ea1fbf52dfc9b2f",
+        strip_prefix = "bazel-lib-1.36.0",
+        url = "https://github.com/aspect-build/bazel-lib/archive/refs/tags/v1.36.0.tar.gz",
     )
