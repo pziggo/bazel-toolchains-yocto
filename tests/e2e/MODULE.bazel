@@ -1,0 +1,3 @@
+module(
+    name = "bazel-toolchains-yocto-test",
+)
