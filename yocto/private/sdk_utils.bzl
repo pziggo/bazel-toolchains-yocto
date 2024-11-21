@@ -2,14 +2,14 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
-    "//yocto/private:common_utils.bzl",
-    "env_pair",
-    "env_to_config",
-)
-load(
     "//yocto/private:build_templates.bzl",
     "BUILD_for_platform",
     "BUILD_for_sdk_tree",
+)
+load(
+    "//yocto/private:common_utils.bzl",
+    "env_pair",
+    "env_to_config",
 )
 load("//yocto/private:toolchain_template.bzl", "BUILD_for_toolchain")
 load(
@@ -38,11 +38,13 @@ def _setup_bazel_files(repository_ctx, config):
             executable = False,
         )
 
-    repository_ctx.file(
-        "bazel/BUILD.bazel",
-        content = BUILD_for_platform(config),
-        executable = False,
-    )
+    
+    if repository_ctx.attr.register_toolchain:
+        repository_ctx.file(
+            "bazel/BUILD.bazel",
+            content = BUILD_for_platform(config),
+            executable = False,
+        )
 
     repository_ctx.file(
         "bazel/toolchain/ld-linux-x86-64.so.2",
@@ -91,11 +93,12 @@ def _setup_bazel_files(repository_ctx, config):
         executable = True,
     )
 
-    repository_ctx.file(
-        "bazel/toolchain/BUILD.bazel",
-        content = BUILD_for_toolchain(repository_ctx.attr.name, config),
-        executable = False,
-    )
+    if repository_ctx.attr.register_toolchain:
+        repository_ctx.file(
+            "bazel/toolchain/BUILD.bazel",
+            content = BUILD_for_toolchain(repository_ctx.attr.name, config),
+            executable = False,
+        )
 
 def _read_env_from_environment_setup(repository_ctx):
     env = dict()
@@ -183,6 +186,15 @@ install_and_setup_sdk = repository_rule(
             mandatory = True,
             allow_single_file = True,
             doc = "",
+        ),
+        "register_toolchain": attr.bool(
+            mandatory = False,
+            default = True,
+            doc = 
+                "If the toolchain should be registered with bazel after installation, " +
+                "defaults to true. This is useful when you want fine grained control " +
+                "of the bazel toolchain definition, but still want to take advantage of " +
+                "the other featuers of link_and_setup_sdk.",
         ),
         "_post_script": attr.label(
             default = Label("//scripts:post_extract.sh"),

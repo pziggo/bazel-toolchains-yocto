@@ -9,6 +9,7 @@ def http_yocto_toolchain_archive(
         sdk_installer,
         build_file = None,
         build_file_content = "",
+        register_toolchain = True,
         **kwargs):
     """Download archived toolchain script
 
@@ -18,6 +19,7 @@ def http_yocto_toolchain_archive(
         build_file_content (label, optional): The content for the BUILD file for the SDK tree.
         environment_setup (str): Name of the environment setup file
         sdk_installer (str): Name of the self extracting toolchain script
+        register_toolchain (bool, optional): If the toolchain should be registered with bazel after installation.
         **kwargs (dict): Keyword arguments for the `http_archive`, see https://bazel.build/rules/lib/repo/http#http_archive.
     """
     http_archive(
@@ -31,6 +33,7 @@ def http_yocto_toolchain_archive(
         build_file = build_file,
         build_file_content = build_file_content,
         environment_setup = environment_setup,
+        register_toolchain = register_toolchain,
         # Labels will not be resolved to the end in repository rules ... files must be named as they are
         sdk_installer = "@{}_dl//:{}".format(name, sdk_installer),
     )
@@ -40,6 +43,7 @@ def http_yocto_toolchain_file(
         environment_setup,
         build_file = None,
         build_file_content = "",
+        register_toolchain = True,
         **kwargs):
     """Download self extracting toolchain script
 
@@ -48,6 +52,7 @@ def http_yocto_toolchain_file(
         build_file (label, optional): The file to use as the BUILD file for the SDK tree.
         build_file_content (label, optional): The content for the BUILD file for the SDK tree.
         environment_setup (str): Name of the environment setup file
+        register_toolchain (bool, optional): If the toolchain should be registered with bazel after installation.
         **kwargs (dict): Keyword arguments for the `http_file`, see https://bazel.build/rules/lib/repo/http#http_file.
     """
     http_file(
@@ -60,6 +65,7 @@ def http_yocto_toolchain_file(
         build_file = build_file,
         build_file_content = build_file_content,
         environment_setup = environment_setup,
+        register_toolchain = register_toolchain,
         # Labels will not be resolved to the end in repository rules ... files must be named as they are
         sdk_installer = "@{}_dl//file:downloaded".format(name),
     )
