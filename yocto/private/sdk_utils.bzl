@@ -113,7 +113,7 @@ def _read_env_from_environment_setup(repository_ctx):
 
 def _install_sdk(repository_ctx):
     repository_ctx.report_progress("Installing Yocto SDK {}".format(repository_ctx.path(repository_ctx.attr.sdk_installer)))
-    res = repository_ctx.execute(["sh", repository_ctx.path(repository_ctx.attr.sdk_installer), "-y", "-d", repository_ctx.path("."), "-R"])
+    res = repository_ctx.execute(["sh", repository_ctx.path(repository_ctx.attr.sdk_installer), "-y", "-d", repository_ctx.path(".")])
     if res.return_code:
         fail("error installing Yocto SDK:\n" + res.stdout + res.stderr)
 

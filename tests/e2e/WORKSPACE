@@ -17,16 +17,16 @@ http_yocto_toolchain_file(
     name = "core2-64-poky-linux",
     environment_setup = "environment-setup-core2-64-poky-linux",
     executable = True,
-    sha256 = "941269887d2acd2c7f2f5129c1eb4993b3144e6a36eddd8c1664de533e3ba98e",
-    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.1.2/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-4.1.2.sh"],
+    sha256 = "110d70bf8042d8262790462e48245d37190884d3b6f813d9913eae31d0abcb71",
+    urls = ["https://downloads.yoctoproject.org/releases/yocto/yocto-5.0.10/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-core2-64-qemux86-64-toolchain-5.0.10.sh"],
 )
 
 http_yocto_toolchain_file(
     name = "cortexa57-poky-linux_new",
     build_file = "@//third_party/cortexa57-poky-linux:BUILD.cortexa57-poky-linux",
     environment_setup = "environment-setup-cortexa57-poky-linux",
-    sha256 = "456eb2820f1ec975f01e30c6df2021ca7030080fd299767a96757e63da7cb488",
-    urls = ["http://downloads.yoctoproject.org/releases/yocto/yocto-4.1.2/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-4.1.2.sh"],
+    sha256 = "de5340bf0bc5a535988d63e0ad88792658982500ef265403394705b844b9c10f",
+    urls = ["https://downloads.yoctoproject.org/releases/yocto/yocto-5.0.10/toolchain/x86_64/poky-glibc-x86_64-core-image-sato-cortexa57-qemuarm64-toolchain-5.0.10.sh"],
 )
 
 http_yocto_toolchain_archive(
