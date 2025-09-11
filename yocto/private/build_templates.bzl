@@ -21,7 +21,6 @@ filegroup(
 filegroup(
     name = "native_runtime",
     srcs = glob([
-        "{native_sysroot}/lib/ld-*.so",
         "{native_sysroot}/lib/ld-linux*.so.*",
         "{native_sysroot}/lib/libc.so.*",
         "{native_sysroot}/lib/libdl.so.*",
