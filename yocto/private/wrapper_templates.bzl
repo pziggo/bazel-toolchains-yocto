@@ -38,8 +38,8 @@ def WRAPPER_for_ld(path, config):
         dynamic_linker = _get_dynamic_linker_path(path, config),
     )
 
-_wrapper_for_clang = _script_header + """\
-exec "{path}/{native_sysroot}/usr/bin/clang" \
+_wrapper_for_clang =  _script_header + _ld_exec_wrapper + """\
+  "{path}/{native_sysroot}/usr/bin/clang" \
   "-v" \
   "$@"
 """

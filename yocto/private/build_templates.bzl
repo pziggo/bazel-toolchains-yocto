@@ -9,6 +9,7 @@ filegroup(
         [
             "{native_sysroot}/usr/lib/{target_prefix}/**",
             "{target_sysroot}/lib/*.so*",
+            "{target_sysroot}/usr/lib/*.so*",
             "{native_sysroot}/usr/lib/clang/20/include/**",
             "{target_sysroot}/usr/include/**",
             "{target_sysroot}/usr/lib/**/*.a",
@@ -22,12 +23,9 @@ filegroup(
 filegroup(
     name = "native_runtime",
     srcs = glob([
-        "{native_sysroot}/lib/ld-linux*.so.*",
-        "{native_sysroot}/lib/libc.so.*",
-        "{native_sysroot}/lib/libdl.so.*",
-        "{native_sysroot}/lib/libm.so.*",
-        "{native_sysroot}/lib/libpthread.so.*",
-        "{native_sysroot}/usr/lib/lib*.so.*",
+        "{native_sysroot}/lib/**",
+        "{native_sysroot}/usr/lib/**",
+        "{native_sysroot}/usr/include/**",
         "{native_sysroot}/usr/libexec/{target_prefix}/**",
     ]),
 )

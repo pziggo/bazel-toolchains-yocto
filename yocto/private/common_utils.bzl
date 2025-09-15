@@ -111,6 +111,10 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         "-fno-canonical-system-headers",
         "-Wno-builtin-macro-redefined",
     ]
+    unfiltered_compile_flags_clang = [
+        "-no-canonical-prefixes",
+        "-Wno-builtin-macro-redefined",
+    ]
 
     builtin_sysroot = "external/{}/{}".format(
         repository_ctx.attr.name,
@@ -190,4 +194,5 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         tool_paths = tool_paths,
         tool_paths_clang = tool_paths_clang,
         unfiltered_compile_flags = unfiltered_compile_flags,
+        unfiltered_compile_flags_clang = unfiltered_compile_flags_clang,
     )

@@ -136,7 +136,7 @@ def _fix_ld_scripts(repository_ctx, config):
     the linker tries to link against the absolut path which is pointing to the
     host libraries.
     """
-    for linker_script in ["/usr/lib/libc.so", "/usr/lib/libm.so", "/usr/lib/libpthread.so"]:
+    for linker_script in ["/usr/lib/libc.so", "/usr/lib/libm.so", "/usr/lib/libpthread.so", "/usr/lib/librt.so", "/usr/lib/libgcc_s.so"]:
         res = repository_ctx.execute([repository_ctx.path(repository_ctx.attr._post_script), config.target_sysroot, linker_script])
         if res.return_code == 0 and res.stdout:
             repository_ctx.file("bazel/toolchain/{}".format(paths.basename(linker_script)), content = res.stdout)

@@ -136,6 +136,7 @@ cc_toolchain_config(
     link_flags = {link_flags_clang},
     link_libs = {link_libs},
     opt_link_flags = {opt_link_flags},
+    unfiltered_compile_flags = {unfiltered_compile_flags_clang},
     supports_start_end_lib = False,
     builtin_sysroot = "{builtin_sysroot}",
 )
@@ -229,4 +230,5 @@ def BUILD_for_toolchain(name, config):
         tool_paths = str(config.tool_paths),
         tool_paths_clang = str(config.tool_paths_clang),
         unfiltered_compile_flags = config.unfiltered_compile_flags,
+        unfiltered_compile_flags_clang = config.unfiltered_compile_flags_clang,
     )
