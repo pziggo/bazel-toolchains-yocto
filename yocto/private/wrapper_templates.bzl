@@ -117,7 +117,7 @@ def WRAPPER_for_generic_tool(name, path, config):
     )
 
 _wrapper_for_real_ld_template = _script_header + _ld_exec_wrapper + """\
-  "{path}/{native_sysroot}"/usr/bin/{target_prefix}/{target_prefix}-lld \
+  "{path}/{native_sysroot}"/usr/bin/{target_prefix}/{target_prefix}-ld \
   "$@"
 """
 

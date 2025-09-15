@@ -78,19 +78,23 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     """
 
     repo_root = str(repository_ctx.path(relative_root))
+    oecore_native_sysroot = env.get("OECORE_NATIVE_SYSROOT")
 
-    compile_flags = format_command_options(env.get("CLANGCC"), True)
-    cxx_builtin_include_directories = []
+    compile_flags = format_command_options(env.get("CC"), True)
+    compile_flags_clang = format_command_options(env.get("CLANGCC"), True)
+    # ToDo - improve to not use hardcoded versions here
+    cxx_builtin_include_directories = [oecore_native_sysroot + "/usr/lib/gcc/x86_64-linux-gnu/13.3.0/include", oecore_native_sysroot + "/usr/include"]
+    cxx_builtin_include_directories_clang = [oecore_native_sysroot + "/usr/lib/clang/20/include/", oecore_native_sysroot + "/usr/include"]
     dbg_compile_flags = []
     dynamic_linker = env.get("UNINATIVE_LOADER")
     link_flags = format_command_options(env.get("LD"), True)
-    link_flags = ["-fuse-ld=lld"] + compile_flags + link_flags
+    link_flags_clang = ["-fuse-ld=lld"] + compile_flags_clang + link_flags
     link_libs = ["-lstdc++", "-lm"]
-    native_prefix = paths.basename(env.get("OECORE_NATIVE_SYSROOT"))
+    native_prefix = paths.basename(oecore_native_sysroot)
     native_sysroot = relativize_sysroot_path(
         repository_ctx.name,
         repo_root,
-        env.get("OECORE_NATIVE_SYSROOT"),
+        oecore_native_sysroot,
     )
     opt_compile_flags = []
     opt_link_flags = []
@@ -104,6 +108,7 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     )
     unfiltered_compile_flags = [
         "-no-canonical-prefixes",
+        "-fno-canonical-system-headers",
         "-Wno-builtin-macro-redefined",
     ]
 
@@ -116,10 +121,29 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     link_flags.extend(format_command_options(env.get("LDFLAGS")))
 
     # only add flags if not in compile_flags
-    cxx_flags = [flag for flag in format_command_options(env.get("CLANGCXX"), True) if flag not in compile_flags]
+    cxx_flags = [flag for flag in format_command_options(env.get("CXX"), True) if flag not in compile_flags]
     cxx_flags.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
+    cxx_flags_clang = [flag for flag in format_command_options(env.get("CLANGCXX"), True) if flag not in compile_flags]
+    cxx_flags_clang.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
 
     tool_paths = {
+        "addr2line": "/bin/false",
+        "ar": "{}-ar".format(target_prefix),
+        "as": "{}-as".format(target_prefix),
+        "compat-ld": "/bin/false",
+        "cpp": "{}-cpp".format(target_prefix),
+        "dwp": "/bin/false",
+        "gcc": "{}-gcc".format(target_prefix),
+        "gcov": "/bin/false",
+        "ld": "{}-ld".format(target_prefix),
+        "llvm-cov": "/bin/false",
+        "nm": "{}-nm".format(target_prefix),
+        "objcopy": "{}-objcopy".format(target_prefix),
+        "objdump": "{}-objdump".format(target_prefix),
+        "strip": "{}-strip".format(target_prefix),
+    }
+
+    tool_paths_clang = {
         "addr2line": "/bin/false",
         "ar": "{}-ar".format(target_prefix),
         "as": "{}-as".format(target_prefix),
@@ -138,16 +162,22 @@ def env_to_config(repository_ctx, env, relative_root = "."):
 
     # sysroot will be added by bazel toolchain config via builtin_sysroot variable
     compile_flags = remove_elements_starting_with_keyword("--sysroot", compile_flags)
+    compile_flags_clang = remove_elements_starting_with_keyword("--sysroot", compile_flags_clang)
     link_flags = remove_elements_starting_with_keyword("--sysroot", link_flags)
+    link_flags_clang = remove_elements_starting_with_keyword("--sysroot", link_flags_clang)
 
     return struct(
         builtin_sysroot = builtin_sysroot,
         compile_flags = compile_flags,
+        compile_flags_clang = compile_flags_clang,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
+        cxx_builtin_include_directories_clang = cxx_builtin_include_directories_clang,
         cxx_flags = cxx_flags,
+        cxx_flags_clang = cxx_flags_clang,
         dbg_compile_flags = dbg_compile_flags,
         dynamic_linker = dynamic_linker,
         link_flags = link_flags,
+        link_flags_clang = link_flags_clang,
         link_libs = link_libs,
         native_prefix = native_prefix,
         native_sysroot = native_sysroot,
@@ -158,5 +188,6 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         target_prefix = target_prefix,
         target_sysroot = target_sysroot,
         tool_paths = tool_paths,
+        tool_paths_clang = tool_paths_clang,
         unfiltered_compile_flags = unfiltered_compile_flags,
     )

@@ -96,7 +96,7 @@ filegroup(
 cc_toolchain_config(
     name = "cc-toolchain-config",
     cpu = "{target_arch}",
-    compiler = "clang",
+    compiler = "gcc",
     toolchain_identifier = "{name}",
     host_system_name = "{native_prefix}",
     target_system_name = "{target_prefix}",
@@ -117,6 +117,29 @@ cc_toolchain_config(
     builtin_sysroot = "{builtin_sysroot}",
 )
 
+cc_toolchain_config(
+    name = "cc-toolchain-config-clang",
+    cpu = "{target_arch}",
+    compiler = "clang",
+    toolchain_identifier = "{name}_clang",
+    host_system_name = "{native_prefix}",
+    target_system_name = "{target_prefix}",
+    target_libc = "unknown",
+    abi_version = "unknown",
+    abi_libc_version = "unknown",
+    cxx_builtin_include_directories = {cxx_builtin_include_directories_clang},
+    tool_paths = {tool_paths_clang},
+    compile_flags = {compile_flags_clang},
+    dbg_compile_flags = {dbg_compile_flags},
+    opt_compile_flags = {opt_compile_flags},
+    cxx_flags = {cxx_flags_clang},
+    link_flags = {link_flags_clang},
+    link_libs = {link_libs},
+    opt_link_flags = {opt_link_flags},
+    supports_start_end_lib = False,
+    builtin_sysroot = "{builtin_sysroot}",
+)
+
 cc_toolchain(
     name = "cc-target",
     all_files = ":all_files",
@@ -131,6 +154,20 @@ cc_toolchain(
     toolchain_config = "cc-toolchain-config",
 )
 
+cc_toolchain(
+    name = "cc-target-clang",
+    all_files = ":all_files",
+    ar_files = ":ar_files",
+    as_files = ":as_files",
+    compiler_files = ":compiler_files",
+    dwp_files = ":empty",
+    linker_files = ":linker_files",
+    objcopy_files = ":objcopy_files",
+    strip_files = ":strip_files",
+    supports_param_files = 1,
+    toolchain_config = "cc-toolchain-config-clang",
+)
+
 toolchain(
     name = "cc-toolchain-target",
     exec_compatible_with = [
@@ -142,6 +179,20 @@ toolchain(
         "@platforms//os:{target_os}",
     ],
     toolchain = ":cc-target",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+toolchain(
+    name = "cc-toolchain-target-clang",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:{target_arch}",
+        "@platforms//os:{target_os}",
+    ],
+    toolchain = ":cc-target-clang",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
 """
@@ -160,10 +211,14 @@ def BUILD_for_toolchain(name, config):
         name = name,
         builtin_sysroot = str(config.builtin_sysroot),
         compile_flags = str(config.compile_flags),
+        compile_flags_clang = str(config.compile_flags_clang),
         cxx_builtin_include_directories = str(config.cxx_builtin_include_directories),
+        cxx_builtin_include_directories_clang = str(config.cxx_builtin_include_directories_clang),
         cxx_flags = str(config.cxx_flags),
+        cxx_flags_clang = str(config.cxx_flags_clang),
         dbg_compile_flags = str(config.dbg_compile_flags),
         link_flags = str(config.link_flags),
+        link_flags_clang = str(config.link_flags_clang),
         link_libs = str(config.link_libs),
         native_prefix = config.native_prefix,
         opt_compile_flags = str(config.opt_compile_flags),
@@ -172,5 +227,6 @@ def BUILD_for_toolchain(name, config):
         target_os = config.target_os,
         target_prefix = config.target_prefix,
         tool_paths = str(config.tool_paths),
+        tool_paths_clang = str(config.tool_paths_clang),
         unfiltered_compile_flags = config.unfiltered_compile_flags,
     )
