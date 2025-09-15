@@ -106,6 +106,11 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         repo_root,
         env.get("SDKTARGETSYSROOT"),
     )
+
+    # Get absolute paths for include directory resolution (after basic variables are defined)
+    native_sysroot_abs = paths.join(repo_root, native_sysroot)
+    target_sysroot_abs = paths.join(repo_root, target_sysroot)
+    native_sysroot_real = env.get("OECORE_NATIVE_SYSROOT")
     unfiltered_compile_flags = [
         "-no-canonical-prefixes",
         "-fno-canonical-system-headers",
@@ -129,6 +134,63 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     cxx_flags.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
     cxx_flags_clang = [flag for flag in format_command_options(env.get("CLANGCXX"), True) if flag not in compile_flags]
     cxx_flags_clang.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
+
+    # Detect the C++/GCC version by examining the target sysroot
+    cpp_ver_dir = paths.join(target_sysroot_abs, "usr/include/c++")
+    res = repository_ctx.execute(["bash", "-c", "ls -1 " + cpp_ver_dir + " 2>/dev/null | head -n1"], quiet = True)
+    gcc_ver = res.stdout.strip() if res.return_code == 0 and res.stdout.strip() else "13.3.0"
+
+    # Add C++ and GCC builtin include directories to whitelist
+    cxx_builtin_include_directories.extend([
+        # Target sysroot include directories
+        paths.join(target_sysroot_abs, "usr/include"),
+        paths.join(target_sysroot_abs, "usr/include/c++", gcc_ver),
+        paths.join(target_sysroot_abs, "usr/include/{tp}/c++".format(tp = target_prefix), gcc_ver),
+        paths.join(target_sysroot_abs, "usr/include/c++", gcc_ver, target_prefix),
+        # GCC builtin headers in native sysroot (where GCC toolchain is located)
+        paths.join(native_sysroot_real, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        paths.join(native_sysroot_real, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        # Also add the /proc/self/cwd/ prefixed versions that the compiler reports
+        "/proc/self/cwd/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        "/proc/self/cwd/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include"),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver, target_prefix),
+        # Add the full external repository prefixed versions as reported by compiler
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver, target_prefix),
+    ])
+
+    # Add clang builtin include directories
+    cxx_builtin_include_directories_clang.extend([
+        # Target sysroot include directories
+        paths.join(target_sysroot_abs, "usr/include"),
+        paths.join(target_sysroot_abs, "usr/include/c++", gcc_ver),
+        paths.join(target_sysroot_abs, "usr/include/{tp}/c++".format(tp = target_prefix), gcc_ver),
+        paths.join(target_sysroot_abs, "usr/include/c++", gcc_ver, target_prefix),
+        # Clang builtin headers in native sysroot
+        paths.join(native_sysroot_real, "usr/lib/clang/20/include"),
+        # GCC builtin headers that clang may also need
+        paths.join(native_sysroot_real, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        paths.join(native_sysroot_real, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        # Also add the /proc/self/cwd/ prefixed versions that the compiler reports
+        "/proc/self/cwd/" + paths.join(native_sysroot, "usr/lib/clang/20/include"),
+        "/proc/self/cwd/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        "/proc/self/cwd/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include"),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver),
+        "/proc/self/cwd/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver, target_prefix),
+        # Add the full external repository prefixed versions as reported by compiler
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(native_sysroot, "usr/lib/clang/20/include"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(native_sysroot, "usr/lib/{tp}/gcc/{tp}".format(tp = target_prefix), gcc_ver, "include-fixed"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include"),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver),
+        "/proc/self/cwd/external/" + repository_ctx.name + "/" + paths.join(target_sysroot, "usr/include/c++", gcc_ver, target_prefix),
+    ])
 
     tool_paths = {
         "addr2line": "/bin/false",
