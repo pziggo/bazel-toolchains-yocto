@@ -35,6 +35,7 @@ filegroup(
         "//:target_sysroot_minimal",
         ":ld-wrapper",
         "{target_prefix}-as",
+        "{target_prefix}-clang",
         "{target_prefix}-cpp",
         "{target_prefix}-gcc",
         "as",
@@ -46,6 +47,7 @@ filegroup(
     srcs = glob(["lib*.so"]) + [
         ":ld-wrapper",
         "{target_prefix}-ar",
+        "{target_prefix}-clang",
         "{target_prefix}-gcc",
         "{target_prefix}-ld",
         "//:ar",
@@ -94,7 +96,7 @@ filegroup(
 cc_toolchain_config(
     name = "cc-toolchain-config",
     cpu = "{target_arch}",
-    compiler = "gcc",
+    compiler = "clang",
     toolchain_identifier = "{name}",
     host_system_name = "{native_prefix}",
     target_system_name = "{target_prefix}",

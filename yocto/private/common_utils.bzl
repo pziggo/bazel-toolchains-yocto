@@ -79,11 +79,12 @@ def env_to_config(repository_ctx, env, relative_root = "."):
 
     repo_root = str(repository_ctx.path(relative_root))
 
-    compile_flags = format_command_options(env.get("CC"), True)
+    compile_flags = format_command_options(env.get("CLANGCC"), True)
     cxx_builtin_include_directories = []
     dbg_compile_flags = []
     dynamic_linker = env.get("UNINATIVE_LOADER")
     link_flags = format_command_options(env.get("LD"), True)
+    link_flags = ["-fuse-ld=lld"] + compile_flags + link_flags
     link_libs = ["-lstdc++", "-lm"]
     native_prefix = paths.basename(env.get("OECORE_NATIVE_SYSROOT"))
     native_sysroot = relativize_sysroot_path(
@@ -103,7 +104,6 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     )
     unfiltered_compile_flags = [
         "-no-canonical-prefixes",
-        "-fno-canonical-system-headers",
         "-Wno-builtin-macro-redefined",
     ]
 
@@ -116,7 +116,7 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     link_flags.extend(format_command_options(env.get("LDFLAGS")))
 
     # only add flags if not in compile_flags
-    cxx_flags = [flag for flag in format_command_options(env.get("CXX"), True) if flag not in compile_flags]
+    cxx_flags = [flag for flag in format_command_options(env.get("CLANGCXX"), True) if flag not in compile_flags]
     cxx_flags.extend([flag for flag in format_command_options(env.get("CXXFLAGS")) if flag not in compile_flags])
 
     tool_paths = {
@@ -126,7 +126,7 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         "compat-ld": "/bin/false",
         "cpp": "{}-cpp".format(target_prefix),
         "dwp": "/bin/false",
-        "gcc": "{}-gcc".format(target_prefix),
+        "gcc": "{}-clang".format(target_prefix),
         "gcov": "/bin/false",
         "ld": "{}-ld".format(target_prefix),
         "llvm-cov": "/bin/false",

@@ -9,6 +9,7 @@ filegroup(
         [
             "{native_sysroot}/usr/lib/{target_prefix}/**",
             "{target_sysroot}/lib/*.so*",
+            "{native_sysroot}/usr/lib/clang/20/include/**",
             "{target_sysroot}/usr/include/**",
             "{target_sysroot}/usr/lib/**/*.a",
             "{target_sysroot}/usr/lib/**/*.o",
@@ -37,6 +38,9 @@ filegroup(
         ":native_runtime",
         "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-g++",
         "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-gcc",
+        "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-clang",
+        "{native_sysroot}/usr/bin/clang",
+        "{native_sysroot}/usr/bin/clang-20",
     ],
     visibility = ["//visibility:public"],
 )
@@ -64,6 +68,10 @@ filegroup(
     srcs = [
         ":native_runtime",
         "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-ld",
+        "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-lld",
+        "{native_sysroot}/usr/bin/{target_prefix}/{target_prefix}-ld.lld",
+        "{native_sysroot}/usr/bin/ld",
+        "{native_sysroot}/usr/bin/ld.lld",
     ],
     visibility = ["//visibility:public"],
 )

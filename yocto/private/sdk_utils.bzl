@@ -14,6 +14,7 @@ load(
 load("//yocto/private:toolchain_template.bzl", "BUILD_for_toolchain")
 load(
     "//yocto/private:wrapper_templates.bzl",
+    "WRAPPER_for_clang",
     "WRAPPER_for_compiler",
     "WRAPPER_for_generic_tool",
     "WRAPPER_for_ld",
@@ -47,6 +48,16 @@ def _setup_bazel_files(repository_ctx, config):
     repository_ctx.file(
         "bazel/toolchain/ld-linux-x86-64.so.2",
         content = WRAPPER_for_ld(path, config),
+        executable = True,
+    )
+
+    repository_ctx.file(
+        "bazel/toolchain/{}-{}".format(config.target_prefix, "clang"),
+        content = WRAPPER_for_clang(
+            "clang",
+            path,
+            config,
+        ),
         executable = True,
     )
 
@@ -234,6 +245,8 @@ link_and_setup_sdk = repository_rule(
     environ = [
         "CC",
         "CFLAGS",
+        "CLANGCC",
+        "CLANGCXX",
         "CXX",
         "CXXFLAGS",
         "LDFLAGS",

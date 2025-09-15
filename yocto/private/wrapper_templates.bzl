@@ -38,6 +38,31 @@ def WRAPPER_for_ld(path, config):
         dynamic_linker = _get_dynamic_linker_path(path, config),
     )
 
+_wrapper_for_clang = _script_header + """\
+exec "{path}/{native_sysroot}/usr/bin/clang" \
+  "-v" \
+  "$@"
+"""
+
+def WRAPPER_for_clang(name, path, config):
+    """Emits a wrapper file for clang inside the SDK tree.
+
+    Args:
+        name (str): Name of the tool
+        path (str): base path of the sysroots
+        config (struct): Yocto SDK configuration
+
+    Returns:
+        str: The contents for the wrapper file
+    """
+    return _wrapper_for_clang.format(
+        name = name,
+        path = path,
+        native_sysroot = config.native_sysroot,
+        target_prefix = config.target_prefix,
+        dynamic_linker = _get_dynamic_linker_path(path, config),
+    )
+
 _wrapper_for_compiler_template = _script_header + """\
 GCC_EXEC_PREFIX=$(dirname "$0")
 
@@ -92,7 +117,7 @@ def WRAPPER_for_generic_tool(name, path, config):
     )
 
 _wrapper_for_real_ld_template = _script_header + _ld_exec_wrapper + """\
-  "{path}/{native_sysroot}"/usr/bin/{target_prefix}/{target_prefix}-ld \
+  "{path}/{native_sysroot}"/usr/bin/{target_prefix}/{target_prefix}-lld \
   "$@"
 """
 
