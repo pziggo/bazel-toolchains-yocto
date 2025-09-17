@@ -35,7 +35,6 @@ def WRAPPER_for_ld(path, config):
 
 _wrapper_for_clang =  _script_header + _ld_exec_wrapper + """\
   "$REPO_ROOT/{native_sysroot}/usr/bin/clang" \
-  "-v" \
   "$@"
 """
 
