@@ -216,6 +216,31 @@ def BUILD_for_toolchain(name, config):
     foreign_cc_config = ""
     if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
         foreign_cc_config = """
+# Export individual tools for foreign_cc toolchains
+filegroup(
+    name = "cmake",
+    srcs = ["x86_64-pokysdk-linux/usr/bin/cmake"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "make",
+    srcs = ["x86_64-pokysdk-linux/usr/bin/make"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ninja", 
+    srcs = ["x86_64-pokysdk-linux/usr/bin/ninja"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "pkg_config",
+    srcs = ["x86_64-pokysdk-linux/usr/bin/pkg-config"],
+    visibility = ["//visibility:public"],
+)
+
 # Individual toolchains for each foreign_cc tool
 toolchain(
     name = "yocto_cmake_toolchain",
