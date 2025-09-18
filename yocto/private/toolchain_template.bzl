@@ -216,20 +216,61 @@ def BUILD_for_toolchain(name, config):
     foreign_cc_config = ""
     if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
         foreign_cc_config = """
-load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
-
-native_tool_toolchain(
-    name = "yocto_foreign_cc_tools",
-)
-
+# Individual toolchains for each foreign_cc tool
 toolchain(
-    name = "yocto_foreign_cc_toolchain",
+    name = "yocto_cmake_toolchain",
     exec_compatible_with = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
     ],
-    toolchain = ":yocto_foreign_cc_tools",
-    toolchain_type = "@rules_foreign_cc//toolchains:toolchain_type",
+    target_compatible_with = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux", 
+    ],
+    toolchain = "//:cmake",
+    toolchain_type = "@rules_foreign_cc//toolchains:cmake_toolchain",
+)
+
+toolchain(
+    name = "yocto_make_toolchain", 
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+    toolchain = "//:make",
+    toolchain_type = "@rules_foreign_cc//toolchains:make_toolchain",
+)
+
+toolchain(
+    name = "yocto_ninja_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64", 
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+    toolchain = "//:ninja",
+    toolchain_type = "@rules_foreign_cc//toolchains:ninja_toolchain",
+)
+
+toolchain(
+    name = "yocto_pkgconfig_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux", 
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+    toolchain = "//:pkg_config",
+    toolchain_type = "@rules_foreign_cc//toolchains:pkgconfig_toolchain",
 )
 """
 
