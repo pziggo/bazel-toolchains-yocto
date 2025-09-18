@@ -232,6 +232,38 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     link_flags = remove_elements_starting_with_keyword("--sysroot", link_flags)
     link_flags_clang = remove_elements_starting_with_keyword("--sysroot", link_flags_clang)
 
+    # Check for rules_foreign_cc build tools in the SDK
+    # HARDCODED: Always enable foreign_cc toolchain
+    enable_foreign_cc = True
+    cmake_available = True
+    ninja_available = True
+    pkg_config_available = True
+    make_available = True
+
+    if native_sysroot_real:
+        # Check for cmake
+        cmake_res = repository_ctx.execute(["test", "-f", native_sysroot_real + "/usr/bin/cmake"], quiet = True)
+        cmake_available = cmake_res.return_code == 0
+
+        # Check for ninja
+        ninja_res = repository_ctx.execute(["test", "-f", native_sysroot_real + "/usr/bin/ninja"], quiet = True)
+        ninja_available = ninja_res.return_code == 0
+
+        # Check for pkg-config
+        pkg_config_res = repository_ctx.execute(["test", "-f", native_sysroot_real + "/usr/bin/pkg-config"], quiet = True)
+        pkg_config_available = pkg_config_res.return_code == 0
+
+        # Check for make (various names)
+        make_res = repository_ctx.execute(["sh", "-c", "test -f " + native_sysroot_real + "/usr/bin/make || test -f " + native_sysroot_real + "/usr/bin/gmake"], quiet = True)
+        make_available = make_res.return_code == 0
+
+        print("=== FOREIGN_CC TOOLS DETECTION ===")
+        print("  cmake available:", cmake_available)
+        print("  ninja available:", ninja_available)
+        print("  pkg-config available:", pkg_config_available)
+        print("  make available:", make_available)
+        print("  foreign_cc enabled: HARDCODED TO TRUE")
+
     return struct(
         builtin_sysroot = builtin_sysroot,
         compile_flags = compile_flags,
@@ -242,6 +274,7 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         cxx_flags_clang = cxx_flags_clang,
         dbg_compile_flags = dbg_compile_flags,
         dynamic_linker = dynamic_linker,
+        enable_foreign_cc = enable_foreign_cc,
         link_flags = link_flags,
         link_flags_clang = link_flags_clang,
         link_libs = link_libs,
