@@ -216,9 +216,9 @@ def BUILD_for_toolchain(name, config):
     foreign_cc_config = ""
     if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
         foreign_cc_config = """
-load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tools_toolchain")
+load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
 
-native_tools_toolchain(
+native_tool_toolchain(
     name = "yocto_foreign_cc_tools",
     cmake = "//:cmake",
     ninja = "//:ninja",
