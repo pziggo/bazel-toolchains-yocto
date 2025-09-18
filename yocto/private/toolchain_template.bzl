@@ -221,22 +221,22 @@ load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "n
 # Toolchain providers for each tool
 native_tool_toolchain(
     name = "yocto_cmake_provider",
-    path = "x86_64-pokysdk-linux/usr/bin/cmake",
+    path = "cmake",
 )
 
 native_tool_toolchain(
     name = "yocto_make_provider",
-    path = "x86_64-pokysdk-linux/usr/bin/make",
+    path = "make",
 )
 
 native_tool_toolchain(
     name = "yocto_ninja_provider",
-    path = "x86_64-pokysdk-linux/usr/bin/ninja", 
+    path = "ninja", 
 )
 
 native_tool_toolchain(
     name = "yocto_pkgconfig_provider",
-    path = "x86_64-pokysdk-linux/usr/bin/pkg-config",
+    path = "pkg-config",
 )
 
 # Individual toolchains for each foreign_cc tool
