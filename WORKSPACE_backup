@@ -1,4 +1,0 @@
-workspace(name = "test-local-sdk")
-
-load("//:test_local_sdk.bzl", "setup_test_sdk")
-setup_test_sdk()

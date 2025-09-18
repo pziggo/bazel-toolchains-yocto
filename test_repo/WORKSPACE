@@ -1,7 +1,0 @@
-workspace(name = "test")
-load("@bazel_tools//tools/build_defs/repo:local.bzl", "local_repository")
-local_repository(name = "yocto_src", path = "..")
-load("@yocto_src//yocto:repositories.bzl", "bazel_toolchains_yocto_dependencies")
-bazel_toolchains_yocto_dependencies()
-load("@yocto_src//yocto:defs.bzl", "local_yocto_toolchain")
-local_yocto_toolchain(name = "yocto_aarch64")
