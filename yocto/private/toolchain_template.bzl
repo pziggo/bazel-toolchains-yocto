@@ -216,29 +216,27 @@ def BUILD_for_toolchain(name, config):
     foreign_cc_config = ""
     if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
         foreign_cc_config = """
-# Export individual tools for foreign_cc toolchains
-filegroup(
-    name = "cmake",
-    srcs = ["x86_64-pokysdk-linux/usr/bin/cmake"],
-    visibility = ["//visibility:public"],
+load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
+
+# Toolchain providers for each tool
+native_tool_toolchain(
+    name = "yocto_cmake_provider",
+    path = "x86_64-pokysdk-linux/usr/bin/cmake",
 )
 
-filegroup(
-    name = "make",
-    srcs = ["x86_64-pokysdk-linux/usr/bin/make"],
-    visibility = ["//visibility:public"],
+native_tool_toolchain(
+    name = "yocto_make_provider",
+    path = "x86_64-pokysdk-linux/usr/bin/make",
 )
 
-filegroup(
-    name = "ninja", 
-    srcs = ["x86_64-pokysdk-linux/usr/bin/ninja"],
-    visibility = ["//visibility:public"],
+native_tool_toolchain(
+    name = "yocto_ninja_provider",
+    path = "x86_64-pokysdk-linux/usr/bin/ninja", 
 )
 
-filegroup(
-    name = "pkg_config",
-    srcs = ["x86_64-pokysdk-linux/usr/bin/pkg-config"],
-    visibility = ["//visibility:public"],
+native_tool_toolchain(
+    name = "yocto_pkgconfig_provider",
+    path = "x86_64-pokysdk-linux/usr/bin/pkg-config",
 )
 
 # Individual toolchains for each foreign_cc tool
@@ -252,7 +250,7 @@ toolchain(
         "@platforms//cpu:aarch64",
         "@platforms//os:linux", 
     ],
-    toolchain = "//:cmake",
+    toolchain = ":yocto_cmake_provider",
     toolchain_type = "@rules_foreign_cc//toolchains:cmake_toolchain",
 )
 
@@ -266,7 +264,7 @@ toolchain(
         "@platforms//cpu:aarch64",
         "@platforms//os:linux",
     ],
-    toolchain = "//:make",
+    toolchain = ":yocto_make_provider",
     toolchain_type = "@rules_foreign_cc//toolchains:make_toolchain",
 )
 
@@ -280,7 +278,7 @@ toolchain(
         "@platforms//cpu:aarch64",
         "@platforms//os:linux",
     ],
-    toolchain = "//:ninja",
+    toolchain = ":yocto_ninja_provider",
     toolchain_type = "@rules_foreign_cc//toolchains:ninja_toolchain",
 )
 
@@ -294,7 +292,7 @@ toolchain(
         "@platforms//cpu:aarch64",
         "@platforms//os:linux",
     ],
-    toolchain = "//:pkg_config",
+    toolchain = ":yocto_pkgconfig_provider",
     toolchain_type = "@rules_foreign_cc//toolchains:pkgconfig_toolchain",
 )
 """

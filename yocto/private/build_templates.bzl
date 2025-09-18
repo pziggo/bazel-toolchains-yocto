@@ -127,6 +127,8 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
+
+{foreign_cc_tools}
 """
 
 def BUILD_for_sdk_tree(config):
@@ -138,10 +140,41 @@ def BUILD_for_sdk_tree(config):
     Returns:
         str: The contents for a BUILD file
     """
+    # Generate foreign_cc tool exports if enabled
+    foreign_cc_tools = ""
+    if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
+        foreign_cc_tools = """
+# Export individual tools for foreign_cc toolchains
+filegroup(
+    name = "cmake",
+    srcs = ["{native_sysroot}/usr/bin/cmake"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "make",
+    srcs = ["{native_sysroot}/usr/bin/make"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ninja", 
+    srcs = ["{native_sysroot}/usr/bin/ninja"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "pkg_config",
+    srcs = ["{native_sysroot}/usr/bin/pkg-config"],
+    visibility = ["//visibility:public"],
+)
+""".format(native_sysroot=config.native_sysroot)
+
     return _build_file_for_sdk_tree_template.format(
         native_sysroot = config.native_sysroot,
         target_prefix = config.target_prefix,
         target_sysroot = config.target_sysroot,
+        foreign_cc_tools = foreign_cc_tools,
     )
 
 _build_file_for_platform_template = """\

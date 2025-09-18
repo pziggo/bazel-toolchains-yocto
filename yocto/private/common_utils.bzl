@@ -257,12 +257,6 @@ def env_to_config(repository_ctx, env, relative_root = "."):
         make_res = repository_ctx.execute(["sh", "-c", "test -f " + native_sysroot_real + "/usr/bin/make || test -f " + native_sysroot_real + "/usr/bin/gmake"], quiet = True)
         make_available = make_res.return_code == 0
 
-        print("=== FOREIGN_CC TOOLS DETECTION ===")
-        print("  cmake available:", cmake_available)
-        print("  ninja available:", ninja_available)
-        print("  pkg-config available:", pkg_config_available)
-        print("  make available:", make_available)
-        print("  foreign_cc enabled: HARDCODED TO TRUE")
 
     return struct(
         builtin_sysroot = builtin_sysroot,
