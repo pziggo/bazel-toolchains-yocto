@@ -196,6 +196,9 @@ toolchain(
     toolchain = ":cc-target-clang",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
 )
+
+# rules_foreign_cc toolchain configuration (optional)
+{foreign_cc_toolchain_config}
 """
 
 def BUILD_for_toolchain(name, config):
