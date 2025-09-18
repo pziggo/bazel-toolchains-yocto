@@ -220,10 +220,6 @@ load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "n
 
 native_tool_toolchain(
     name = "yocto_foreign_cc_tools",
-    cmake = "//:cmake",
-    ninja = "//:ninja",
-    pkg_config = "//:pkg_config",
-    make = "//:make",
 )
 
 toolchain(
