@@ -208,6 +208,32 @@ def BUILD_for_toolchain(name, config):
     Returns:
         str: The contents for a BUILD file
     """
+
+    # Generate optional foreign_cc toolchain configuration
+    foreign_cc_config = ""
+    if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
+        foreign_cc_config = """
+load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tools_toolchain")
+
+native_tools_toolchain(
+    name = "yocto_foreign_cc_tools",
+    cmake = "//:cmake",
+    ninja = "//:ninja",
+    pkg_config = "//:pkg_config",
+    make = "//:make",
+)
+
+toolchain(
+    name = "yocto_foreign_cc_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    toolchain = ":yocto_foreign_cc_tools",
+    toolchain_type = "@rules_foreign_cc//toolchains:toolchain_type",
+)
+"""
+
     return _build_file_toolchain_template.format(
         name = name,
         builtin_sysroot = str(config.builtin_sysroot),
@@ -231,4 +257,5 @@ def BUILD_for_toolchain(name, config):
         tool_paths_clang = str(config.tool_paths_clang),
         unfiltered_compile_flags = config.unfiltered_compile_flags,
         unfiltered_compile_flags_clang = config.unfiltered_compile_flags_clang,
+        foreign_cc_toolchain_config = foreign_cc_config,
     )
