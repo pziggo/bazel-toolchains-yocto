@@ -229,6 +229,17 @@ def env_to_config(repository_ctx, env, relative_root = "."):
     # sysroot will be added by bazel toolchain config via builtin_sysroot variable
     compile_flags = remove_elements_starting_with_keyword("--sysroot", compile_flags)
     compile_flags_clang = remove_elements_starting_with_keyword("--sysroot", compile_flags_clang)
+    
+    # Add canonical repository include paths for spawn_strategy=local
+    # Use -nostdinc++ to disable compiler built-in search paths that look in wrong locations
+    canonical_include_paths = [
+        "-nostdinc++",  # Disable built-in C++ include paths to prevent /include/c++ searches
+        "-I" + "external/+yocto_ext+yocto_aarch64/" + target_sysroot + "/usr/include",
+        "-I" + "external/+yocto_ext+yocto_aarch64/" + target_sysroot + "/usr/include/c++/13.3.0",
+        "-I" + "external/+yocto_ext+yocto_aarch64/" + target_sysroot + "/usr/include/c++/13.3.0/" + target_prefix,
+    ]
+    compile_flags.extend(canonical_include_paths)
+    compile_flags_clang.extend(canonical_include_paths)
     link_flags = remove_elements_starting_with_keyword("--sysroot", link_flags)
     link_flags_clang = remove_elements_starting_with_keyword("--sysroot", link_flags_clang)
 
