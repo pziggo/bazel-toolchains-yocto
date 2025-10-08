@@ -211,92 +211,6 @@ def BUILD_for_toolchain(name, config):
     Returns:
         str: The contents for a BUILD file
     """
-
-    # Generate optional foreign_cc toolchain configuration
-    foreign_cc_config = ""
-    if hasattr(config, "enable_foreign_cc") and config.enable_foreign_cc:
-        foreign_cc_config = """
-load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
-
-# Toolchain providers for each tool
-native_tool_toolchain(
-    name = "yocto_cmake_provider",
-    path = "cmake",
-)
-
-native_tool_toolchain(
-    name = "yocto_make_provider",
-    path = "make",
-)
-
-native_tool_toolchain(
-    name = "yocto_ninja_provider",
-    path = "ninja", 
-)
-
-native_tool_toolchain(
-    name = "yocto_pkgconfig_provider",
-    path = "pkg-config",
-)
-
-# Individual toolchains for each foreign_cc tool
-toolchain(
-    name = "yocto_cmake_toolchain",
-    exec_compatible_with = [
-        "@platforms//cpu:x86_64",
-        "@platforms//os:linux",
-    ],
-    target_compatible_with = [
-        "@platforms//cpu:aarch64",
-        "@platforms//os:linux", 
-    ],
-    toolchain = ":yocto_cmake_provider",
-    toolchain_type = "@rules_foreign_cc//toolchains:cmake_toolchain",
-)
-
-toolchain(
-    name = "yocto_make_toolchain", 
-    exec_compatible_with = [
-        "@platforms//cpu:x86_64",
-        "@platforms//os:linux",
-    ],
-    target_compatible_with = [
-        "@platforms//cpu:aarch64",
-        "@platforms//os:linux",
-    ],
-    toolchain = ":yocto_make_provider",
-    toolchain_type = "@rules_foreign_cc//toolchains:make_toolchain",
-)
-
-toolchain(
-    name = "yocto_ninja_toolchain",
-    exec_compatible_with = [
-        "@platforms//cpu:x86_64", 
-        "@platforms//os:linux",
-    ],
-    target_compatible_with = [
-        "@platforms//cpu:aarch64",
-        "@platforms//os:linux",
-    ],
-    toolchain = ":yocto_ninja_provider",
-    toolchain_type = "@rules_foreign_cc//toolchains:ninja_toolchain",
-)
-
-toolchain(
-    name = "yocto_pkgconfig_toolchain",
-    exec_compatible_with = [
-        "@platforms//cpu:x86_64",
-        "@platforms//os:linux", 
-    ],
-    target_compatible_with = [
-        "@platforms//cpu:aarch64",
-        "@platforms//os:linux",
-    ],
-    toolchain = ":yocto_pkgconfig_provider",
-    toolchain_type = "@rules_foreign_cc//toolchains:pkgconfig_toolchain",
-)
-"""
-
     return _build_file_toolchain_template.format(
         name = name,
         builtin_sysroot = str(config.builtin_sysroot),
@@ -320,5 +234,4 @@ toolchain(
         tool_paths_clang = str(config.tool_paths_clang),
         unfiltered_compile_flags = config.unfiltered_compile_flags,
         unfiltered_compile_flags_clang = config.unfiltered_compile_flags_clang,
-        foreign_cc_toolchain_config = foreign_cc_config,
     )
