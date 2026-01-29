@@ -7,6 +7,8 @@ Macros for downloading yocto toolchains
 ## http_yocto_toolchain_archive
 
 <pre>
+load("@bazel-toolchains-yocto//yocto:defs.bzl", "http_yocto_toolchain_archive")
+
 http_yocto_toolchain_archive(<a href="#http_yocto_toolchain_archive-name">name</a>, <a href="#http_yocto_toolchain_archive-environment_setup">environment_setup</a>, <a href="#http_yocto_toolchain_archive-sdk_installer">sdk_installer</a>, <a href="#http_yocto_toolchain_archive-build_file">build_file</a>, <a href="#http_yocto_toolchain_archive-build_file_content">build_file_content</a>,
                              <a href="#http_yocto_toolchain_archive-kwargs">kwargs</a>)
 </pre>
@@ -31,6 +33,8 @@ Download archived toolchain script
 ## http_yocto_toolchain_file
 
 <pre>
+load("@bazel-toolchains-yocto//yocto:defs.bzl", "http_yocto_toolchain_file")
+
 http_yocto_toolchain_file(<a href="#http_yocto_toolchain_file-name">name</a>, <a href="#http_yocto_toolchain_file-environment_setup">environment_setup</a>, <a href="#http_yocto_toolchain_file-build_file">build_file</a>, <a href="#http_yocto_toolchain_file-build_file_content">build_file_content</a>, <a href="#http_yocto_toolchain_file-kwargs">kwargs</a>)
 </pre>
 
@@ -53,6 +57,8 @@ Download self extracting toolchain script
 ## local_yocto_toolchain
 
 <pre>
+load("@bazel-toolchains-yocto//yocto:defs.bzl", "local_yocto_toolchain")
+
 local_yocto_toolchain(<a href="#local_yocto_toolchain-name">name</a>, <a href="#local_yocto_toolchain-build_file">build_file</a>, <a href="#local_yocto_toolchain-build_file_content">build_file_content</a>)
 </pre>
 
