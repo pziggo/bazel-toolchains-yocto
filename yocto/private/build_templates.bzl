@@ -13,14 +13,15 @@ filegroup(
             "{target_sysroot}/usr/lib/**/*.a",
             "{target_sysroot}/usr/lib/**/*.o",
             "{target_sysroot}/usr/lib/**/*.so*",
-        ],
+        ], allow_empty = True,
     ),
     visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "native_runtime",
-    srcs = glob([
+    srcs = glob(
+        [
         "{native_sysroot}/lib/ld-*.so",
         "{native_sysroot}/lib/ld-linux*.so.*",
         "{native_sysroot}/lib/libc.so.*",
@@ -29,7 +30,8 @@ filegroup(
         "{native_sysroot}/lib/libpthread.so.*",
         "{native_sysroot}/usr/lib/lib*.so.*",
         "{native_sysroot}/usr/libexec/{target_prefix}/**",
-    ]),
+        ], allow_empty = True,
+    ),
 )
 
 filegroup(
