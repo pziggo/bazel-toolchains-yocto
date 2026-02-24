@@ -4,8 +4,8 @@
 # Debug where options came from
 build --announce_rc
 # This directory is configured in GitHub actions to be persisted between runs.
-build --disk_cache=~/.cache/bazel
-build --repository_cache=~/.cache/bazel-repo
+build --disk_cache=~/.cache/bazel_disk_cache
+build --repository_cache=~/.cache/bazel_repo_cache
 # Throw an error in CI if the lock file is not up to date
 build --lockfile_mode=error
 
