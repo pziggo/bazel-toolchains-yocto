@@ -2,14 +2,14 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
-    "//yocto/private:common_utils.bzl",
-    "env_pair",
-    "env_to_config",
-)
-load(
     "//yocto/private:build_templates.bzl",
     "BUILD_for_platform",
     "BUILD_for_sdk_tree",
+)
+load(
+    "//yocto/private:common_utils.bzl",
+    "env_pair",
+    "env_to_config",
 )
 load("//yocto/private:toolchain_template.bzl", "BUILD_for_toolchain")
 load(
@@ -112,8 +112,14 @@ def _read_env_from_environment_setup(repository_ctx):
     return env
 
 def _install_sdk(repository_ctx):
+    # Get the Python binary from the registered toolchain
+    python_bin = repository_ctx.path(Label("@@rules_python++python+python_3_12_11_x86_64-unknown-linux-gnu//:bin/python"))
+    env = dict(repository_ctx.os.environ)
+    env.update({"PATH": str(python_bin.dirname) + ":" + env.get("PATH", "")})
+    # repository_ctx.execute(["python", "-V"], environment = env, quiet = False)
+
     repository_ctx.report_progress("Installing Yocto SDK {}".format(repository_ctx.path(repository_ctx.attr.sdk_installer)))
-    res = repository_ctx.execute(["sh", repository_ctx.path(repository_ctx.attr.sdk_installer), "-y", "-d", repository_ctx.path("."), "-R"])
+    res = repository_ctx.execute(["sh", repository_ctx.path(repository_ctx.attr.sdk_installer), "-y", "-d", repository_ctx.path("."), "-R"], environment = env)
     if res.return_code:
         fail("error installing Yocto SDK:\n" + res.stdout + res.stderr)
 

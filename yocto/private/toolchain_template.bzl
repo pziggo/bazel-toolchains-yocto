@@ -138,6 +138,7 @@ toolchain(
     target_compatible_with = [
         "@platforms//cpu:{target_arch}",
         "@platforms//os:{target_os}",
+        "//bazel:yocto",
     ],
     toolchain = ":cc-target",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",

@@ -2,6 +2,29 @@
 
 Macros for downloading yocto toolchains
 
+## Bzlmod
+
+Use the module extension to declare toolchain repositories from MODULE.bazel.
+
+```starlark
+bazel_dep(name = "bazel-toolchains-yocto", version = "<version>")
+
+yocto = use_extension(
+    "@bazel-toolchains-yocto//yocto:extensions.bzl",
+    "yocto_toolchains",
+)
+
+yocto.http_file(
+    name = "core2-64-poky-linux",
+    environment_setup = "environment-setup-core2-64-poky-linux",
+    executable = True,
+    sha256 = "<sha256>",
+    urls = ["https://example.com/poky-toolchain.sh"],
+)
+
+use_repo(yocto, "core2-64-poky-linux")
+```
+
 <a id="http_yocto_toolchain_archive"></a>
 
 ## http_yocto_toolchain_archive
