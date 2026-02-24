@@ -51,6 +51,7 @@ def relativize_sysroot_path(
     for i in range(sysroot_length):
         if sysroot_segments[i] == anchor:
             relative_path = "/".join(sysroot_segments[-(sysroot_length - i - skip_anchor):])
+            break
 
     if not len(relative_path):
         # No common anchor, assume sysroot is external and linked into workspace

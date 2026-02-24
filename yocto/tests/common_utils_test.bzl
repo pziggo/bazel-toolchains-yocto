@@ -45,6 +45,15 @@ def _relativize_sysroot_path_test_impl(ctx):
     )
     asserts.equals(
         env,
+        "sysroots/repository",
+        relativize_sysroot_path(
+            "repository",
+            "/bazel/outputBase/external/repository",
+            "/bazel/outputBase/external/repository/sysroots/repository",
+        ),
+    )
+    asserts.equals(
+        env,
         "a",
         relativize_sysroot_path(
             "repository",
